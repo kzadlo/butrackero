@@ -58,6 +58,7 @@ class Expense
     public function setCategory(ExpenseCategory $category): Expense
     {
         $this->category = $category;
+        $category->addExpense($this);
         return $this;
     }
 

@@ -58,6 +58,7 @@ class Income
     public function setType(IncomeType $type): Income
     {
         $this->type = $type;
+        $type->addIncome($this);
         return $this;
     }
 
