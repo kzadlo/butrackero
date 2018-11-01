@@ -58,4 +58,21 @@ class IncomeType
         $this->description = $description;
         return $this;
     }
+
+    public function getIncomes(): ArrayCollection
+    {
+        return $this->incomes;
+    }
+
+    public function addIncome(Income $income): IncomeType
+    {
+        $this->incomes->add($income);
+        return $this;
+    }
+
+    public function removeIncome(Income $income): IncomeType
+    {
+        $this->incomes->remove($income);
+        return $this;
+    }
 }

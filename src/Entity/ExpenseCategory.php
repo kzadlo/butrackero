@@ -58,4 +58,21 @@ class ExpenseCategory
         $this->description = $description;
         return $this;
     }
+
+    public function getExpenses(): ArrayCollection
+    {
+        return $this->expenses;
+    }
+
+    public function addExpense(Expense $expense): ExpenseCategory
+    {
+        $this->expenses->add($expense);
+        return $this;
+    }
+
+    public function removeExpense(Expense $expense): ExpenseCategory
+    {
+        $this->expenses->remove($expense);
+        return $this;
+    }
 }
