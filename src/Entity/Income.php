@@ -21,7 +21,7 @@ class Income
     private $amount;
 
     /**
-     * @ORM\OneToOne(targetEntity="IncomeType")
+     * @ORM\ManyToOne(targetEntity="IncomeType", inversedBy="incomes")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
      */
     private $type;

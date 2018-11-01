@@ -21,7 +21,7 @@ class Expense
     private $amount;
 
     /**
-     * @ORM\OneToOne(targetEntity="ExpenseCategory")
+     * @ORM\ManyToOne(targetEntity="ExpenseCategory", inversedBy="expenses")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
      */
     private $category;

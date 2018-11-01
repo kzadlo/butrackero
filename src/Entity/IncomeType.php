@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,6 +23,14 @@ class IncomeType
 
     /** @ORM\Column(type="string", length=255, nullable=true) */
     private $description;
+
+    /** @ORM\OneToMany(targetEntity="Income", mappedBy="income") */
+    private $incomes;
+
+    public function __construct()
+    {
+        $this->incomes = new ArrayCollection();
+    }
 
     public function getId(): int
     {
