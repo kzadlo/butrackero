@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -48,7 +49,7 @@ class ExpenseCategory
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -59,7 +60,7 @@ class ExpenseCategory
         return $this;
     }
 
-    public function getExpenses(): ArrayCollection
+    public function getExpenses(): Collection
     {
         return $this->expenses;
     }
