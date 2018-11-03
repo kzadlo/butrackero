@@ -25,7 +25,7 @@ class ExpenseCategory
     /** @ORM\Column(type="string", length=255, nullable=true) */
     private $description;
 
-    /** @ORM\OneToMany(targetEntity="Expense", mappedBy="category") */
+    /** @ORM\OneToMany(targetEntity="Expense", mappedBy="category", cascade={"persist"}) */
     private $expenses;
 
     public function __construct()

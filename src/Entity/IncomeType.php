@@ -25,7 +25,7 @@ class IncomeType
     /** @ORM\Column(type="string", length=255, nullable=true) */
     private $description;
 
-    /** @ORM\OneToMany(targetEntity="Income", mappedBy="income") */
+    /** @ORM\OneToMany(targetEntity="Income", mappedBy="income", cascade={"persist"}) */
     private $incomes;
 
     public function __construct()
