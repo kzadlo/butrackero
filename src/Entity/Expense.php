@@ -62,12 +62,12 @@ class Expense
         return $this;
     }
 
-    public function getCreated(): \DateTime
+    public function getCreated(): \DateTimeInterface
     {
         return $this->created;
     }
 
-    public function setCreated(\DateTime $created): Expense
+    public function setCreated(\DateTimeInterface $created): Expense
     {
         $this->created = $created;
         return $this;

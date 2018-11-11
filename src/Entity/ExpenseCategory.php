@@ -65,6 +65,11 @@ class ExpenseCategory
         return $this;
     }
 
+    public function hasDescription(): bool
+    {
+        return (bool) $this->getDescription();
+    }
+
     public function getExpenses(): Collection
     {
         return $this->expenses;
@@ -72,13 +77,30 @@ class ExpenseCategory
 
     public function addExpense(Expense $expense): ExpenseCategory
     {
-        $this->expenses->add($expense);
+        if (!$this->hasExpense($expense)) {
+            $expense->setCategory($this);
+            $this->expenses->add($expense);
+        }
+
         return $this;
     }
 
     public function removeExpense(Expense $expense): ExpenseCategory
     {
-        $this->expenses->remove($expense);
+        if ($this->hasExpense($expense)) {
+            $this->expenses->remove($expense);
+        }
+
         return $this;
+    }
+
+    public function hasExpense(Expense $expense): bool
+    {
+        return $this->expenses->contains($expense);
+    }
+
+    public function hasExpenses(): bool
+    {
+        return !$this->expenses->isEmpty();
     }
 }

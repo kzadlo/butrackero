@@ -25,7 +25,7 @@ class IncomeType
     /** @ORM\Column(type="string", length=255, nullable=true) */
     private $description;
 
-    /** @ORM\OneToMany(targetEntity="Income", mappedBy="income", cascade={"persist"}) */
+    /** @ORM\OneToMany(targetEntity="Income", mappedBy="type", cascade={"persist"}) */
     private $incomes;
 
     public function __construct()
@@ -65,6 +65,11 @@ class IncomeType
         return $this;
     }
 
+    public function hasDescription(): bool
+    {
+        return (bool) $this->getDescription();
+    }
+
     public function getIncomes(): Collection
     {
         return $this->incomes;
@@ -72,13 +77,30 @@ class IncomeType
 
     public function addIncome(Income $income): IncomeType
     {
-        $this->incomes->add($income);
+        if (!$this->hasIncome($income)) {
+            $income->setType($this);
+            $this->incomes->add($income);
+        }
+
         return $this;
     }
 
     public function removeIncome(Income $income): IncomeType
     {
-        $this->incomes->remove($income);
+        if ($this->hasIncome($income)) {
+            $this->incomes->remove($income);
+        }
+
         return $this;
+    }
+
+    public function hasIncome(Income $income): bool
+    {
+        return $this->incomes->contains($income);
+    }
+
+    public function hasIncomes(): bool
+    {
+        return !$this->incomes->isEmpty();
     }
 }

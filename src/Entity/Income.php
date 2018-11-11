@@ -62,12 +62,12 @@ class Income
         return $this;
     }
 
-    public function getCreated(): \DateTime
+    public function getCreated(): \DateTimeInterface
     {
         return $this->created;
     }
 
-    public function setCreated(\DateTime $created): Income
+    public function setCreated(\DateTimeInterface $created): Income
     {
         $this->created = $created;
         return $this;
