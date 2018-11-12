@@ -7,7 +7,7 @@ use App\Entity\Expense;
 use App\Entity\ExpenseCategory;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ExpenseHydratorStrategy extends HydrationStrategy
+class ExpenseHydratorStrategy implements HydrationStrategyInterface
 {
     /** @var Expense $entity */
     public function extract(BalanceEntityInterface $entity): array
