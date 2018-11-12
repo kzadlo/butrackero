@@ -4,24 +4,59 @@ namespace App\Service;
 
 use App\Entity\Income;
 use App\Entity\IncomeType;
+use App\Hydrator\BalanceHydrator;
+use App\Hydrator\IncomeHydratorStrategy;
 use Doctrine\ORM\EntityManagerInterface;
 
 class IncomeManager
 {
+    private $hydrator;
+
+    private $hydrationStrategy;
+
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        BalanceHydrator $hydrator,
+        IncomeHydratorStrategy $strategy,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->hydrator = $hydrator;
+        $this->hydrationStrategy = $strategy;
         $this->entityManager = $entityManager;
     }
 
-    public function updateIncome(Income $income, array $updateValues): void
+    public function getIncomeAsArray(int $id): array
     {
-        if (isset($updateValues['amount'])) {
+        return $this->hydrator->extract(
+            $this->entityManager->find(Income::class, $id),
+            $this->hydrationStrategy
+        );
+    }
+
+    public function addIncome(array $expenseValues): void
+    {
+        $income = $this->hydrator->hydrate($expenseValues, $this->hydrationStrategy, $this->entityManager);
+
+        $this->entityManager->persist($income);
+        $this->entityManager->flush();
+    }
+
+    public function deleteIncome(int $id): void
+    {
+        $this->entityManager->remove($this->entityManager->find(Income::class, $id));
+        $this->entityManager->flush();
+    }
+
+    public function updateIncome(int $id, array $updateValues): void
+    {
+        $income = $this->entityManager->find(Income::class, $id);
+
+        if (!empty($updateValues['amount'])) {
             $income->setAmount($updateValues['amount']);
         }
 
-        if (isset($updateValues['type'])) {
+        if (!empty($updateValues['type'])) {
             $type = $this->entityManager->find(IncomeType::class, $updateValues['type']);
 
             $income->setType($type);
@@ -30,23 +65,10 @@ class IncomeManager
         $this->entityManager->flush();
     }
 
-    public function extractOneIncome(Income $income): array
+    public function getAllIncomesAsArray(): array
     {
-        $extractedIncome['id'] = $income->getId();
-        $extractedIncome['amount'] = $income->getAmount();
-        $extractedIncome['type'] = $income->getType()->getName();
-        $extractedIncome['created_timestamp'] = $income->getCreated()->getTimestamp();
+        $expenses = $this->entityManager->getRepository(Income::class)->findAll();
 
-        return $extractedIncome;
-    }
-
-    public function prepareIncomes(array $incomes): array
-    {
-        $data = [];
-        foreach ($incomes as $income) {
-            $data[] = $this->extractOneIncome($income);
-        }
-
-        return $data;
+        return $this->hydrator->extractSeveral($expenses, $this->hydrationStrategy);
     }
 }
