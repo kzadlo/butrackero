@@ -78,7 +78,6 @@ class ExpenseCategory  implements BalanceEntityInterface
     public function addExpense(Expense $expense): ExpenseCategory
     {
         if (!$this->hasExpense($expense)) {
-            $expense->setCategory($this);
             $this->expenses->add($expense);
         }
 

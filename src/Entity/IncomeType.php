@@ -78,7 +78,6 @@ class IncomeType implements BalanceEntityInterface
     public function addIncome(Income $income): IncomeType
     {
         if (!$this->hasIncome($income)) {
-            $income->setType($this);
             $this->incomes->add($income);
         }
 
