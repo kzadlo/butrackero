@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace App\Balance\Service;
 
-use App\Entity\Expense;
-use App\Entity\ExpenseCategory;
-use App\Hydrator\BalanceHydrator;
-use App\Hydrator\ExpenseHydratorStrategy;
+use App\Balance\Model\Expense;
+use App\Balance\Model\ExpenseCategory;
+use App\Balance\Hydrator\BalanceHydrator;
+use App\Balance\Hydrator\ExpenseHydratorStrategy;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ExpenseManager

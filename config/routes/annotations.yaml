@@ -1,3 +1,7 @@
-controllers:
+main_controllers:
     resource: ../../src/Controller/
+    type: annotation
+
+balance_controllers:
+    resource: ../../src/Balance/Controller/Api
     type: annotation

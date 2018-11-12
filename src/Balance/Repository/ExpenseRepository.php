@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Repository;
+namespace App\Balance\Repository;
 
-use App\Entity\IncomeType;
+use App\Balance\Model\Expense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class IncomeTypeRepository extends ServiceEntityRepository
+class ExpenseRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, IncomeType::class);
+        parent::__construct($registry, Expense::class);
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace App\Balance\Service;
 
-use App\Entity\Income;
-use App\Entity\IncomeType;
-use App\Hydrator\BalanceHydrator;
-use App\Hydrator\IncomeHydratorStrategy;
+use App\Balance\Model\Income;
+use App\Balance\Model\IncomeType;
+use App\Balance\Hydrator\BalanceHydrator;
+use App\Balance\Hydrator\IncomeHydratorStrategy;
 use Doctrine\ORM\EntityManagerInterface;
 
 class IncomeManager

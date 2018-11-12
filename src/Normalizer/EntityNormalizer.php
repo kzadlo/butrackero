@@ -27,7 +27,7 @@ class EntityNormalizer extends ObjectNormalizer
 
     public function supportsDenormalization($data, $type, $format = null)
     {
-        return (strpos($type, 'App\\Entity\\') === 0) && (is_numeric($data) || is_string($data));
+        return (strpos($type, 'App\\Model') === 0) && (is_numeric($data) || is_string($data));
     }
 
     public function denormalize($data, $class, $format = null, array $context = [])

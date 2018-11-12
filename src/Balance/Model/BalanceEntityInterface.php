@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Balance\Model;
 
 interface BalanceEntityInterface
 {

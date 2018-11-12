@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Balance\Controller\Api;
 
-use App\Service\IncomeManager;
+use App\Balance\Service\IncomeManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Hydrator;
+namespace App\Balance\Hydrator;
 
-use App\Entity\BalanceEntityInterface;
+use App\Balance\Model\BalanceEntityInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BalanceHydrator

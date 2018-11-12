@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Hydrator;
+namespace App\Balance\Hydrator;
 
-use App\Entity\BalanceEntityInterface;
-use App\Entity\Expense;
-use App\Entity\ExpenseCategory;
+use App\Balance\Model\BalanceEntityInterface;
+use App\Balance\Model\Income;
+use App\Balance\Model\IncomeType;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ExpenseHydratorStrategy implements HydrationStrategyInterface
+class IncomeHydratorStrategy implements HydrationStrategyInterface
 {
-    /** @var Expense $entity */
+    /** @var Income $entity */
     public function extract(BalanceEntityInterface $entity): array
     {
         return [
             'id' => $entity->getId(),
             'amount' => $entity->getAmount(),
-            'category' => $entity->getCategory()->getName(),
+            'category' => $entity->getType()->getName(),
             'created_timestamp' => $entity->getCreated()->getTimestamp()
         ];
     }
 
     public function hydrate(array $data, EntityManagerInterface $entityManager): BalanceEntityInterface
     {
-        return (new Expense())
+        return (new Income())
             ->setAmount($data['amount'])
-            ->setCategory($entityManager->find(ExpenseCategory::class, $data['category']));
+            ->setType($entityManager->find(IncomeType::class, $data['type']));
     }
 }
