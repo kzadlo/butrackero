@@ -87,7 +87,7 @@ class ExpenseCategory implements BalanceEntityInterface
     public function removeExpense(Expense $expense): ExpenseCategory
     {
         if ($this->hasExpense($expense)) {
-            $this->expenses->remove($expense);
+            $this->expenses->removeElement($expense);
         }
 
         return $this;

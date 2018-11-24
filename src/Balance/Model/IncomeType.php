@@ -87,7 +87,7 @@ class IncomeType implements BalanceEntityInterface
     public function removeIncome(Income $income): IncomeType
     {
         if ($this->hasIncome($income)) {
-            $this->incomes->remove($income);
+            $this->incomes->removeElement($income);
         }
 
         return $this;
