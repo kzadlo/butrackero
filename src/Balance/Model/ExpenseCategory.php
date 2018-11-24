@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table(name="expense_category")
  */
-class ExpenseCategory  implements BalanceEntityInterface
+class ExpenseCategory implements BalanceEntityInterface
 {
     /**
      * @ORM\Id()

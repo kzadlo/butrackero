@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table(name="income")
  */
-class Income  implements BalanceEntityInterface
+class Income implements BalanceEntityInterface
 {
     /**
      * @ORM\Id()
