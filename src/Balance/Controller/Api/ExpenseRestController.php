@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ExpenseController extends AbstractController
+class ExpenseRestController extends AbstractController
 {
     private $expenseManager;
 
@@ -21,7 +21,7 @@ class ExpenseController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    /** @Route("api/expenses", methods={"GET"}) */
+    /** @Route("api/expenses", methods={"GET"}, name="api_expenses_get_all") */
     public function getAllExpenses(): JsonResponse
     {
         return new JsonResponse([
@@ -29,7 +29,7 @@ class ExpenseController extends AbstractController
         ]);
     }
 
-    /** @Route("api/expenses", methods={"POST"}) */
+    /** @Route("api/expenses", methods={"POST"}, name="api_expenses_add") */
     public function addExpense(Request $request): JsonResponse
     {
         $this->expenseManager->addExpense(json_decode($request->getContent(), true));
@@ -39,7 +39,7 @@ class ExpenseController extends AbstractController
         ]);
     }
 
-    /** @Route("api/expenses/{id}", methods={"GET"}) */
+    /** @Route("api/expenses/{id}", methods={"GET"}, name="api_expenses_get") */
     public function getExpense(int $id): JsonResponse
     {
         return new JsonResponse([
@@ -47,7 +47,7 @@ class ExpenseController extends AbstractController
         ]);
     }
 
-    /** @Route("api/expenses/{id}", methods={"DELETE"}) */
+    /** @Route("api/expenses/{id}", methods={"DELETE"}, name="api_expenses_delete") */
     public function deleteExpense(int $id): JsonResponse
     {
         $this->expenseManager->deleteExpense($id);
@@ -57,7 +57,7 @@ class ExpenseController extends AbstractController
         ]);
     }
 
-    /** @Route("api/expenses/{id}", methods={"PUT", "PATCH"}) */
+    /** @Route("api/expenses/{id}", methods={"PUT", "PATCH"}, name="api_expenses_update") */
     public function updateExpense(int $id, Request $request): JsonResponse
     {
         $this->expenseManager->updateExpense($id, json_decode($request->getContent(), true));

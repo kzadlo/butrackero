@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class IncomeController extends AbstractController
+class IncomeRestController extends AbstractController
 {
     private $incomeManager;
 
@@ -21,7 +21,7 @@ class IncomeController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    /** @Route("api/incomes", methods={"GET"}) */
+    /** @Route("api/incomes", methods={"GET"}, name="api_incomes_get_all") */
     public function getAllIncomes(): JsonResponse
     {
         return new JsonResponse([
@@ -29,7 +29,7 @@ class IncomeController extends AbstractController
         ]);
     }
 
-    /** @Route("api/incomes", methods={"POST"}) */
+    /** @Route("api/incomes", methods={"POST"}, name="api_incomes_add") */
     public function addIncome(Request $request): JsonResponse
     {
         $this->incomeManager->addIncome(json_decode($request->getContent(), true));
@@ -39,7 +39,7 @@ class IncomeController extends AbstractController
         ]);
     }
 
-    /** @Route("api/incomes/{id}", methods={"GET"}) */
+    /** @Route("api/incomes/{id}", methods={"GET"}, name="api_incomes_get") */
     public function getExpense(int $id): JsonResponse
     {
         return new JsonResponse([
@@ -47,7 +47,7 @@ class IncomeController extends AbstractController
         ]);
     }
 
-    /** @Route("api/incomes/{id}", methods={"DELETE"}) */
+    /** @Route("api/incomes/{id}", methods={"DELETE"}, name="api_incomes_delete") */
     public function deleteExpense(int $id): JsonResponse
     {
         $this->incomeManager->deleteIncome($id);
@@ -57,7 +57,7 @@ class IncomeController extends AbstractController
         ]);
     }
 
-    /** @Route("api/incomes/{id}", methods={"PUT", "PATCH"}) */
+    /** @Route("api/incomes/{id}", methods={"PUT", "PATCH"}, name="api_incomes_update") */
     public function updateExpense(int $id, Request $request): JsonResponse
     {
        $this->incomeManager->updateIncome($id, json_decode($request->getContent(), true));
