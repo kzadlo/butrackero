@@ -3,7 +3,6 @@
 namespace App\Balance\Service;
 
 use App\Balance\Model\Expense;
-use App\Balance\Model\ExpenseCategory;
 use App\Balance\Hydrator\BalanceHydrator;
 use App\Balance\Hydrator\ExpenseHydratorStrategy;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,40 +25,36 @@ class ExpenseManager
         $this->entityManager = $entityManager;
     }
 
-    public function getExpenseAsArray(int $id): array
+    public function getExpenseAsArray(Expense $expense): array
     {
-        return $this->hydrator->extract(
-            $this->entityManager->find(Expense::class, $id),
-            $this->hydrationStrategy
-        );
+        return $this->hydrator->extract($expense, $this->hydrationStrategy);
     }
 
-    public function addExpense(array $expenseValues): void
+    public function createExpenseFromArray(array $expenseValues): Expense
     {
-        $expense = $this->hydrator->hydrate($expenseValues, $this->hydrationStrategy, $this->entityManager);
+        return $this->hydrator->hydrate($expenseValues, $this->hydrationStrategy);
+    }
 
+    public function addExpense(Expense $expense): void
+    {
         $this->entityManager->persist($expense);
         $this->entityManager->flush();
     }
 
-    public function deleteExpense(int $id): void
+    public function deleteExpense(Expense $expense): void
     {
-        $this->entityManager->remove($this->entityManager->find(Expense::class, $id));
+        $this->entityManager->remove($expense);
         $this->entityManager->flush();
     }
 
-    public function updateExpense(int $id, array $updateValues): void
+    public function updateExpense(Expense $expense, array $updateValues): void
     {
-        $expense = $this->entityManager->find(Expense::class, $id);
-
-        if (!empty($updateValues['amount'])) {
+        if (isset($updateValues['amount'])) {
             $expense->setAmount($updateValues['amount']);
         }
 
-        if (!empty($updateValues['category'])) {
-            $category = $this->entityManager->find(ExpenseCategory::class, $updateValues['category']);
-
-            $expense->setCategory($category);
+        if (isset($updateValues['category'])) {
+            $expense->setCategory($updateValues['category']);
         }
 
         $this->entityManager->flush();

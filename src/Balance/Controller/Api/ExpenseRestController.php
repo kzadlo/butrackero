@@ -2,7 +2,10 @@
 
 namespace App\Balance\Controller\Api;
 
+use App\Balance\Model\Expense;
+use App\Balance\Model\ExpenseCategory;
 use App\Balance\Service\ExpenseManager;
+use App\Balance\Validator\ExpenseValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,14 +14,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExpenseRestController extends AbstractController
 {
-    private $expenseManager;
-
     private $entityManager;
 
-    public function __construct(ExpenseManager $expenseManager, EntityManagerInterface $entityManager)
-    {
-        $this->expenseManager = $expenseManager;
+    private $expenseManager;
+
+    private $expenseValidator;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        ExpenseManager $expenseManager,
+        ExpenseValidator $validator
+    ) {
         $this->entityManager = $entityManager;
+        $this->expenseManager = $expenseManager;
+        $this->expenseValidator = $validator;
     }
 
     /** @Route("api/expenses", methods={"GET"}, name="api_expenses_get_all") */
@@ -32,25 +41,62 @@ class ExpenseRestController extends AbstractController
     /** @Route("api/expenses", methods={"POST"}, name="api_expenses_add") */
     public function addExpense(Request $request): JsonResponse
     {
-        $this->expenseManager->addExpense(json_decode($request->getContent(), true));
+        $expenseData = json_decode($request->getContent(), true);
 
-        return new JsonResponse([
+        $this->expenseValidator->validate($expenseData);
+
+        if ($this->expenseValidator->isValid()) {
+            $expenseData['category'] = $this->entityManager
+                ->find(ExpenseCategory::class, $expenseData['category']);
+
+            $this->expenseValidator->validateCategoryExists($expenseData['category']);
+        }
+
+        if (!$this->expenseValidator->isValid()) {
+            return (new JsonResponse([
+                'errors' => $this->expenseValidator->getErrors()
+            ]))->setStatusCode(400);
+        }
+
+        $this->expenseManager->addExpense($this->expenseManager->createExpenseFromArray($expenseData));
+
+        return (new JsonResponse([
             'message' => 'The expense has been added successfully!'
-        ]);
+        ]))->setStatusCode(201);
     }
 
     /** @Route("api/expenses/{id}", methods={"GET"}, name="api_expenses_get") */
     public function getExpense(int $id): JsonResponse
     {
+        $expense = $this->entityManager->find(Expense::class, $id);
+
+        $this->expenseValidator->validateExpenseExists($expense);
+
+        if (!$this->expenseValidator->isValid()) {
+            return (new JsonResponse([
+                'errors' => $this->expenseValidator->getErrors()
+            ]))->setStatusCode(400);
+        }
+
         return new JsonResponse([
-            $this->expenseManager->getExpenseAsArray($id)
+            $this->expenseManager->getExpenseAsArray($expense)
         ]);
     }
 
     /** @Route("api/expenses/{id}", methods={"DELETE"}, name="api_expenses_delete") */
     public function deleteExpense(int $id): JsonResponse
     {
-        $this->expenseManager->deleteExpense($id);
+        $expense = $this->entityManager->find(Expense::class, $id);
+
+        $this->expenseValidator->validateExpenseExists($expense);
+
+        if (!$this->expenseValidator->isValid()) {
+            return (new JsonResponse([
+                'errors' => $this->expenseValidator->getErrors()
+            ]))->setStatusCode(400);
+        }
+
+        $this->expenseManager->deleteExpense($expense);
 
         return new JsonResponse([
             'message' => 'The expense has been deleted successfully!'
@@ -60,7 +106,33 @@ class ExpenseRestController extends AbstractController
     /** @Route("api/expenses/{id}", methods={"PUT", "PATCH"}, name="api_expenses_update") */
     public function updateExpense(int $id, Request $request): JsonResponse
     {
-        $this->expenseManager->updateExpense($id, json_decode($request->getContent(), true));
+        $expenseData = json_decode($request->getContent(), true);
+        $expense = $this->entityManager->find(Expense::class, $id);
+
+        $this->expenseValidator->validateExpenseExists($expense);
+
+        if ($this->expenseValidator->hasArrayKey('amount', $expenseData)) {
+            $this->expenseValidator->validateAmount($expenseData);
+        }
+
+        if ($this->expenseValidator->hasArrayKey('category', $expenseData)) {
+            $this->expenseValidator->validateCategory($expenseData);
+
+            if ($this->expenseValidator->isValid()) {
+                $expenseData['category'] =
+                    $this->entityManager->find(ExpenseCategory::class, $expenseData['category']);
+
+                $this->expenseValidator->validateCategoryExists($expenseData['category']);
+            }
+        }
+
+        if (!$this->expenseValidator->isValid()) {
+            return (new JsonResponse([
+                'errors' => $this->expenseValidator->getErrors()
+            ]))->setStatusCode(400);
+        }
+
+        $this->expenseManager->updateExpense($expense, $expenseData);
 
         return new JsonResponse([
             'message' => 'The expense has been updated successfully!'
