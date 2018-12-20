@@ -2,7 +2,10 @@
 
 namespace App\Balance\Controller\Api;
 
+use App\Balance\Model\Income;
+use App\Balance\Model\IncomeType;
 use App\Balance\Service\IncomeManager;
+use App\Balance\Validator\IncomeValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,14 +14,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class IncomeRestController extends AbstractController
 {
-    private $incomeManager;
-
     private $entityManager;
 
-    public function __construct(IncomeManager $incomeManager, EntityManagerInterface $entityManager)
-    {
-        $this->incomeManager = $incomeManager;
+    private $incomeManager;
+
+    private $incomeValidator;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        IncomeManager $incomeManager,
+        IncomeValidator $incomeValidator
+    ) {
         $this->entityManager = $entityManager;
+        $this->incomeManager = $incomeManager;
+        $this->incomeValidator = $incomeValidator;
     }
 
     /** @Route("api/incomes", methods={"GET"}, name="api_incomes_get_all") */
@@ -32,25 +41,62 @@ class IncomeRestController extends AbstractController
     /** @Route("api/incomes", methods={"POST"}, name="api_incomes_add") */
     public function addIncome(Request $request): JsonResponse
     {
-        $this->incomeManager->addIncome(json_decode($request->getContent(), true));
+        $incomeData = json_decode($request->getContent(), true);
 
-        return new JsonResponse([
+        $this->incomeValidator->validate($incomeData);
+
+        if ($this->incomeValidator->isValid()) {
+            $incomeData['type'] = $this->entityManager
+                ->find(IncomeType::class, $incomeData['type']);
+
+            $this->incomeValidator->validateTypeExists($incomeData['type']);
+        }
+
+        if (!$this->incomeValidator->isValid()) {
+            return (new JsonResponse([
+                'errors' => $this->incomeValidator->getErrors()
+            ]))->setStatusCode(400);
+        }
+
+        $this->incomeManager->addIncome($this->incomeManager->createIncomeFromArray($incomeData));
+
+        return (new JsonResponse([
             'message' => 'The income has been added successfully!'
-        ]);
+        ]))->setStatusCode(201);
     }
 
     /** @Route("api/incomes/{id}", methods={"GET"}, name="api_incomes_get") */
-    public function getExpense(int $id): JsonResponse
+    public function getIncome(int $id): JsonResponse
     {
+        $income = $this->entityManager->find(Income::class, $id);
+
+        $this->incomeValidator->validateIncomeExists($income);
+
+        if (!$this->incomeValidator->isValid()) {
+            return (new JsonResponse([
+                'errors' => $this->incomeValidator->getErrors()
+            ]))->setStatusCode(400);
+        }
+
         return new JsonResponse([
-            $this->incomeManager->getIncomeAsArray($id)
+            $this->incomeManager->getIncomeAsArray($income)
         ]);
     }
 
     /** @Route("api/incomes/{id}", methods={"DELETE"}, name="api_incomes_delete") */
-    public function deleteExpense(int $id): JsonResponse
+    public function deleteIncome(int $id): JsonResponse
     {
-        $this->incomeManager->deleteIncome($id);
+        $income = $this->entityManager->find(Income::class, $id);
+
+        $this->incomeValidator->validateIncomeExists($income);
+
+        if (!$this->incomeValidator->isValid()) {
+            return (new JsonResponse([
+                'errors' => $this->incomeValidator->getErrors()
+            ]))->setStatusCode(400);
+        }
+
+        $this->incomeManager->deleteIncome($income);
 
         return new JsonResponse([
             'message' => 'The income has been deleted successfully!'
@@ -58,9 +104,35 @@ class IncomeRestController extends AbstractController
     }
 
     /** @Route("api/incomes/{id}", methods={"PUT", "PATCH"}, name="api_incomes_update") */
-    public function updateExpense(int $id, Request $request): JsonResponse
+    public function updateIncome(int $id, Request $request): JsonResponse
     {
-       $this->incomeManager->updateIncome($id, json_decode($request->getContent(), true));
+        $incomeData = json_decode($request->getContent(), true);
+        $income = $this->entityManager->find(Income::class, $id);
+
+        $this->incomeValidator->validateIncomeExists($income);
+
+        if ($this->incomeValidator->hasArrayKey('amount', $incomeData)) {
+            $this->incomeValidator->validateAmount($incomeData);
+        }
+
+        if ($this->incomeValidator->hasArrayKey('type', $incomeData)) {
+            $this->incomeValidator->validateType($incomeData);
+
+            if ($this->incomeValidator->isValid()) {
+                $incomeData['type'] = $this->entityManager
+                    ->find(IncomeType::class, $incomeData['type']);
+
+                $this->incomeValidator->validateTypeExists($incomeData['type']);
+            }
+        }
+
+        if (!$this->incomeValidator->isValid()) {
+            return (new JsonResponse([
+                'errors' => $this->incomeValidator->getErrors()
+            ]))->setStatusCode(400);
+        }
+
+        $this->incomeManager->updateIncome($income, $incomeData);
 
         return new JsonResponse([
             'message' => 'The income has been updated successfully!'
