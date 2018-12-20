@@ -4,8 +4,6 @@ namespace App\Balance\Hydrator;
 
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Expense;
-use App\Balance\Model\ExpenseCategory;
-use Doctrine\ORM\EntityManagerInterface;
 
 class ExpenseHydratorStrategy implements HydrationStrategyInterface
 {
@@ -20,10 +18,10 @@ class ExpenseHydratorStrategy implements HydrationStrategyInterface
         ];
     }
 
-    public function hydrate(array $data, EntityManagerInterface $entityManager): BalanceEntityInterface
+    public function hydrate(array $data): BalanceEntityInterface
     {
         return (new Expense())
             ->setAmount($data['amount'])
-            ->setCategory($entityManager->find(ExpenseCategory::class, $data['category']));
+            ->setCategory($data['category']);
     }
 }

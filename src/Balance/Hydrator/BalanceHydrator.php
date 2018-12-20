@@ -3,7 +3,6 @@
 namespace App\Balance\Hydrator;
 
 use App\Balance\Model\BalanceEntityInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 class BalanceHydrator
 {
@@ -12,12 +11,9 @@ class BalanceHydrator
         return $strategy->extract($entity);
     }
 
-    public function hydrate(
-        array $data,
-        HydrationStrategyInterface $strategy,
-        EntityManagerInterface $entityManager
-    ): BalanceEntityInterface {
-        return $strategy->hydrate($data, $entityManager);
+    public function hydrate(array $data, HydrationStrategyInterface $strategy): BalanceEntityInterface
+    {
+        return $strategy->hydrate($data);
     }
 
     public function extractSeveral(array $entities, HydrationStrategyInterface $strategy): array

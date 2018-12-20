@@ -4,8 +4,6 @@ namespace App\Balance\Hydrator;
 
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Income;
-use App\Balance\Model\IncomeType;
-use Doctrine\ORM\EntityManagerInterface;
 
 class IncomeHydratorStrategy implements HydrationStrategyInterface
 {
@@ -20,10 +18,10 @@ class IncomeHydratorStrategy implements HydrationStrategyInterface
         ];
     }
 
-    public function hydrate(array $data, EntityManagerInterface $entityManager): BalanceEntityInterface
+    public function hydrate(array $data): BalanceEntityInterface
     {
         return (new Income())
             ->setAmount($data['amount'])
-            ->setType($entityManager->find(IncomeType::class, $data['type']));
+            ->setType($data['type']);
     }
 }
