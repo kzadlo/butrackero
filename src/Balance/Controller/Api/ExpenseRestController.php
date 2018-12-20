@@ -119,8 +119,8 @@ class ExpenseRestController extends AbstractController
             $this->expenseValidator->validateCategory($expenseData);
 
             if ($this->expenseValidator->isValid()) {
-                $expenseData['category'] =
-                    $this->entityManager->find(ExpenseCategory::class, $expenseData['category']);
+                $expenseData['category'] = $this->entityManager
+                    ->find(ExpenseCategory::class, $expenseData['category']);
 
                 $this->expenseValidator->validateCategoryExists($expenseData['category']);
             }
