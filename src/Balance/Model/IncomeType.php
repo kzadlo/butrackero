@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Balance\Repository\IncomeTypeRepository")
  * @ORM\Table(name="income_type")
  */
 class IncomeType implements BalanceEntityInterface

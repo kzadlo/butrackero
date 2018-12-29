@@ -5,7 +5,7 @@ namespace App\Balance\Model;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Balance\Repository\ExpenseRepository")
  * @ORM\Table(name="expense")
  */
 class Expense implements BalanceEntityInterface
