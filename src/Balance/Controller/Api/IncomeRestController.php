@@ -47,7 +47,6 @@ class IncomeRestController extends AbstractController
 
         if ($this->incomeValidator->isValid()) {
             $incomeData['type'] = $this->entityManager->find(IncomeType::class, $incomeData['type']);
-
             $this->incomeValidator->validateTypeExists($incomeData['type']);
         }
 
@@ -106,8 +105,8 @@ class IncomeRestController extends AbstractController
     public function updateIncome(int $id, Request $request): JsonResponse
     {
         $incomeData = json_decode($request->getContent(), true);
-        $income = $this->entityManager->find(Income::class, $id);
 
+        $income = $this->entityManager->find(Income::class, $id);
         $this->incomeValidator->validateIncomeExists($income);
 
         if ($this->incomeValidator->hasArrayKey('amount', $incomeData)) {
@@ -115,11 +114,8 @@ class IncomeRestController extends AbstractController
         }
 
         if ($this->incomeValidator->hasArrayKey('type', $incomeData)) {
-            $this->incomeValidator->validateType($incomeData);
-
-            if ($this->incomeValidator->isValid()) {
+            if ($this->incomeValidator->validateType($incomeData)) {
                 $incomeData['type'] = $this->entityManager->find(IncomeType::class, $incomeData['type']);
-
                 $this->incomeValidator->validateTypeExists($incomeData['type']);
             }
         }

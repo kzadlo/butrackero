@@ -13,69 +13,66 @@ class IncomeValidator extends AbstractBalanceValidator
 
     public function validate(array $income): void
     {
-        if ($this->isArrayEmpty($income)) {
-            $this->addError(self::ERROR_NAME_INCOME, self::MESSAGE_ARRAY_IS_EMPTY);
-        } else {
-            $this->validateAmount($income)->validateType($income);
-        }
+        $this->validateAmount($income);
+        $this->validateType($income);
     }
 
-    public function validateAmount(array $income): IncomeValidator
+    public function validateAmount(array $income): bool
     {
         if (!$this->hasArrayKey('amount', $income)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_KEY_NOT_EXISTS);
 
-            return $this;
+            return false;
         }
 
         if ($this->isNull($income['amount'])) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_NULL);
 
-            return $this;
+            return false;
         }
 
         if (!$this->isFloat($income['amount'])) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_NOT_FLOAT);
 
-            return $this;
+            return false;
         }
 
         if (!$this->isGreaterThanZero($income['amount'])) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_LESS_OR_EQUAL_ZERO);
 
-            return $this;
+            return false;
         }
 
-        return $this;
+        return true;
     }
 
-    public function validateType(array $income): IncomeValidator
+    public function validateType(array $income): bool
     {
         if (!$this->hasArrayKey('type', $income)) {
             $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_KEY_NOT_EXISTS);
 
-            return $this;
+            return false;
         }
 
         if ($this->isNull($income['type'])) {
             $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_IS_NULL);
 
-            return $this;
+            return false;
         }
 
         if (!$this->isInt($income['type'])) {
             $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_IS_NOT_INT);
 
-            return $this;
+            return false;
         }
 
         if (!$this->isGreaterThanZero($income['type'])) {
             $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_IS_LESS_OR_EQUAL_ZERO);
 
-            return $this;
+            return false;
         }
 
-        return $this;
+        return true;
     }
 
     public function validateTypeExists(?IncomeType $type): void

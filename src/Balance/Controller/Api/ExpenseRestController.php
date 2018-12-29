@@ -47,7 +47,6 @@ class ExpenseRestController extends AbstractController
 
         if ($this->expenseValidator->isValid()) {
             $expenseData['category'] = $this->entityManager->find(ExpenseCategory::class, $expenseData['category']);
-
             $this->expenseValidator->validateCategoryExists($expenseData['category']);
         }
 
@@ -106,8 +105,8 @@ class ExpenseRestController extends AbstractController
     public function updateExpense(int $id, Request $request): JsonResponse
     {
         $expenseData = json_decode($request->getContent(), true);
-        $expense = $this->entityManager->find(Expense::class, $id);
 
+        $expense = $this->entityManager->find(Expense::class, $id);
         $this->expenseValidator->validateExpenseExists($expense);
 
         if ($this->expenseValidator->hasArrayKey('amount', $expenseData)) {
@@ -115,11 +114,8 @@ class ExpenseRestController extends AbstractController
         }
 
         if ($this->expenseValidator->hasArrayKey('category', $expenseData)) {
-            $this->expenseValidator->validateCategory($expenseData);
-
-            if ($this->expenseValidator->isValid()) {
+            if ($this->expenseValidator->validateCategory($expenseData)) {
                 $expenseData['category'] = $this->entityManager->find(ExpenseCategory::class, $expenseData['category']);
-
                 $this->expenseValidator->validateCategoryExists($expenseData['category']);
             }
         }
