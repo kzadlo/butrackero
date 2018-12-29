@@ -46,8 +46,7 @@ class IncomeRestController extends AbstractController
         $this->incomeValidator->validate($incomeData);
 
         if ($this->incomeValidator->isValid()) {
-            $incomeData['type'] = $this->entityManager
-                ->find(IncomeType::class, $incomeData['type']);
+            $incomeData['type'] = $this->entityManager->find(IncomeType::class, $incomeData['type']);
 
             $this->incomeValidator->validateTypeExists($incomeData['type']);
         }
@@ -119,8 +118,7 @@ class IncomeRestController extends AbstractController
             $this->incomeValidator->validateType($incomeData);
 
             if ($this->incomeValidator->isValid()) {
-                $incomeData['type'] = $this->entityManager
-                    ->find(IncomeType::class, $incomeData['type']);
+                $incomeData['type'] = $this->entityManager->find(IncomeType::class, $incomeData['type']);
 
                 $this->incomeValidator->validateTypeExists($incomeData['type']);
             }
