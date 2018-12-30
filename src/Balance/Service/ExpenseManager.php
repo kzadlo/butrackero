@@ -60,10 +60,15 @@ class ExpenseManager
         $this->entityManager->flush();
     }
 
-    public function getAllExpensesAsArray(): array
+    public function getPortionExpenses(int $offset, int $limit): array
     {
-        $expenses = $this->entityManager->getRepository(Expense::class)->findAll();
+        $expenses = $this->entityManager->getRepository(Expense::class)->findPaginated($offset, $limit);
 
         return $this->hydrator->extractSeveral($expenses, $this->hydrationStrategy);
+    }
+
+    public function countExpenses(): int
+    {
+        return $this->entityManager->getRepository(Expense::class)->countAll();
     }
 }

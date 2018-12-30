@@ -6,11 +6,13 @@ use App\Balance\Model\Expense;
 use App\Balance\Model\ExpenseCategory;
 use App\Balance\Service\ExpenseManager;
 use App\Balance\Validator\ExpenseValidator;
+use App\Service\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ExpenseRestController extends AbstractController
 {
@@ -31,10 +33,54 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses", methods={"GET"}, name="api_expenses_get_all") */
-    public function getAllExpenses(): JsonResponse
+    public function getExpenses(Request $request, PaginatorInterface $paginator): JsonResponse
     {
+        $page = (int) $request->get('page', 1);
+        $params = $request->query->all();
+        $paramsToEdit = $params;
+
+        $allExpensesQuantity = $this->expenseManager->countExpenses();
+
+        $lastPage = $paginator->calculateLastPage($allExpensesQuantity);
+
+        if ($page < 1 || $page > $lastPage) {
+            return new JsonResponse([
+                'errors' => [
+                    'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage)
+                ]
+            ], 400);
+        }
+
+        $paginator->setPage($page);
+        $expenses = $this->expenseManager->getPortionExpenses($paginator->getOffset(), $paginator->getLimit());
+
+        $paramsToEdit['page'] = 1;
+        $firstLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $paramsToEdit['page'] = $paginator->previousPage();
+        $previousLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $paramsToEdit['page'] = $paginator->nextPage();
+        $nextLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $paramsToEdit['page'] = $lastPage;
+        $lastLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+
         return new JsonResponse([
-            'expenses' => $this->expenseManager->getAllExpensesAsArray()
+            'expenses' => $expenses,
+            '_metadata' => [
+                'page' => $paginator->getPage(),
+                'per_page' => $paginator->getLimit(),
+                'page_count' => count($expenses),
+                'total_count' => $allExpensesQuantity,
+                'Links' => [
+                    'self' => $this->generateUrl('api_expenses_get_all', $params, UrlGeneratorInterface::ABSOLUTE_URL),
+                    'first' => $firstLink,
+                    'previous' => $paginator->isFirstPage() ? '' : $previousLink,
+                    'next' => $paginator->isLastPage($lastPage) ? '' : $nextLink,
+                    'last' => $lastLink,
+                ]
+            ]
         ]);
     }
 
@@ -51,16 +97,16 @@ class ExpenseRestController extends AbstractController
         }
 
         if (!$this->expenseValidator->isValid()) {
-            return (new JsonResponse([
+            return new JsonResponse([
                 'errors' => $this->expenseValidator->getErrors()
-            ]))->setStatusCode(400);
+            ], 400);
         }
 
         $this->expenseManager->addExpense($this->expenseManager->createExpenseFromArray($expenseData));
 
-        return (new JsonResponse([
+        return new JsonResponse([
             'message' => 'The expense has been added successfully!'
-        ]))->setStatusCode(201);
+        ], 201);
     }
 
     /** @Route("api/expenses/{id}", methods={"GET"}, name="api_expenses_get") */
@@ -71,9 +117,9 @@ class ExpenseRestController extends AbstractController
         $this->expenseValidator->validateExpenseExists($expense);
 
         if (!$this->expenseValidator->isValid()) {
-            return (new JsonResponse([
+            return new JsonResponse([
                 'errors' => $this->expenseValidator->getErrors()
-            ]))->setStatusCode(400);
+            ], 400);
         }
 
         return new JsonResponse([
@@ -89,9 +135,9 @@ class ExpenseRestController extends AbstractController
         $this->expenseValidator->validateExpenseExists($expense);
 
         if (!$this->expenseValidator->isValid()) {
-            return (new JsonResponse([
+            return new JsonResponse([
                 'errors' => $this->expenseValidator->getErrors()
-            ]))->setStatusCode(400);
+            ], 400);
         }
 
         $this->expenseManager->deleteExpense($expense);
@@ -121,9 +167,9 @@ class ExpenseRestController extends AbstractController
         }
 
         if (!$this->expenseValidator->isValid()) {
-            return (new JsonResponse([
+            return new JsonResponse([
                 'errors' => $this->expenseValidator->getErrors()
-            ]))->setStatusCode(400);
+            ], 400);
         }
 
         $this->expenseManager->updateExpense($expense, $expenseData);
