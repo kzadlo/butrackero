@@ -78,7 +78,7 @@ class ExpenseRestController extends AbstractController
                     'first' => $firstLink,
                     'previous' => $paginator->isFirstPage() ? '' : $previousLink,
                     'next' => $paginator->isLastPage($lastPage) ? '' : $nextLink,
-                    'last' => $lastLink,
+                    'last' => $lastLink
                 ]
             ]
         ]);

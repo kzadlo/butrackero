@@ -22,7 +22,7 @@ class ExpenseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function countAll(): string
+    public function countAll(): int
     {
         return $this->createQueryBuilder('e')
             ->select('COUNT(e.id)')
