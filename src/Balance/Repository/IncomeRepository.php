@@ -12,4 +12,21 @@ class IncomeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Income::class);
     }
+
+    public function findPaginated(int $offset, int $limit): array
+    {
+        return $this->createQueryBuilder('i')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countAll(): int
+    {
+        return $this->createQueryBuilder('i')
+            ->select('COUNT(i.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

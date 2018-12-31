@@ -6,11 +6,13 @@ use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
 use App\Balance\Service\IncomeManager;
 use App\Balance\Validator\IncomeValidator;
+use App\Service\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class IncomeRestController extends AbstractController
 {
@@ -31,10 +33,54 @@ class IncomeRestController extends AbstractController
     }
 
     /** @Route("api/incomes", methods={"GET"}, name="api_incomes_get_all") */
-    public function getAllIncomes(): JsonResponse
+    public function getAllIncomes(Request $request, PaginatorInterface $paginator): JsonResponse
     {
+        $page = (int) $request->get('page', 1);
+        $params = $request->query->all();
+        $paramsToEdit = $params;
+
+        $allIncomesQuantity = $this->incomeManager->countIncomes();
+
+        $lastPage = $paginator->calculateLastPage($allIncomesQuantity);
+
+        if ($page < 1 || $page > $lastPage) {
+            return new JsonResponse([
+                'errors' => [
+                    'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage)
+                ]
+            ], 400);
+        }
+
+        $paginator->setPage($page);
+        $incomes = $this->incomeManager->getPortionIncomes($paginator->getOffset(), $paginator->getLimit());
+
+        $paramsToEdit['page'] = 1;
+        $firstLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $paramsToEdit['page'] = $paginator->previousPage();
+        $previousLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $paramsToEdit['page'] = $paginator->nextPage();
+        $nextLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $paramsToEdit['page'] = $lastPage;
+        $lastLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+
         return new JsonResponse([
-            'incomes' => $this->incomeManager->getAllIncomesAsArray()
+            'incomes' => $incomes,
+            '_metadata' => [
+                'page' => $paginator->getPage(),
+                'per_page' => $paginator->getLimit(),
+                'page_count' => count($incomes),
+                'total_count' => $allIncomesQuantity,
+                'Links' => [
+                    'self' => $this->generateUrl('api_incomes_get_all', $params, UrlGeneratorInterface::ABSOLUTE_URL),
+                    'first' => $firstLink,
+                    'previous' => $paginator->isFirstPage() ? '' : $previousLink,
+                    'next' => $paginator->isLastPage($lastPage) ? '' : $nextLink,
+                    'last' => $lastLink
+                ]
+            ]
         ]);
     }
 
@@ -51,16 +97,16 @@ class IncomeRestController extends AbstractController
         }
 
         if (!$this->incomeValidator->isValid()) {
-            return (new JsonResponse([
+            return new JsonResponse([
                 'errors' => $this->incomeValidator->getErrors()
-            ]))->setStatusCode(400);
+            ], 400);
         }
 
         $this->incomeManager->addIncome($this->incomeManager->createIncomeFromArray($incomeData));
 
-        return (new JsonResponse([
+        return new JsonResponse([
             'message' => 'The income has been added successfully!'
-        ]))->setStatusCode(201);
+        ], 201);
     }
 
     /** @Route("api/incomes/{id}", methods={"GET"}, name="api_incomes_get") */
@@ -71,9 +117,9 @@ class IncomeRestController extends AbstractController
         $this->incomeValidator->validateIncomeExists($income);
 
         if (!$this->incomeValidator->isValid()) {
-            return (new JsonResponse([
+            return new JsonResponse([
                 'errors' => $this->incomeValidator->getErrors()
-            ]))->setStatusCode(400);
+            ], 400);
         }
 
         return new JsonResponse([
@@ -89,9 +135,9 @@ class IncomeRestController extends AbstractController
         $this->incomeValidator->validateIncomeExists($income);
 
         if (!$this->incomeValidator->isValid()) {
-            return (new JsonResponse([
+            return new JsonResponse([
                 'errors' => $this->incomeValidator->getErrors()
-            ]))->setStatusCode(400);
+            ], 400);
         }
 
         $this->incomeManager->deleteIncome($income);
@@ -121,9 +167,9 @@ class IncomeRestController extends AbstractController
         }
 
         if (!$this->incomeValidator->isValid()) {
-            return (new JsonResponse([
+            return new JsonResponse([
                 'errors' => $this->incomeValidator->getErrors()
-            ]))->setStatusCode(400);
+            ], 400);
         }
 
         $this->incomeManager->updateIncome($income, $incomeData);
