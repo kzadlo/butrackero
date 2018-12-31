@@ -39,11 +39,11 @@ class ExpenseRestController extends AbstractController
         $params = $request->query->all();
         $paramsToEdit = $params;
 
-        $allExpensesQuantity = $this->expenseManager->countExpenses();
+        $filteredExpensesQuantity = $this->expenseManager->countFilteredExpenses($params);
 
-        $lastPage = $paginator->calculateLastPage($allExpensesQuantity);
+        $lastPage = $paginator->calculateLastPage($filteredExpensesQuantity);
 
-        if ($page < 1 || $page > $lastPage) {
+        if ($page < 1 || $page > $lastPage && $lastPage > 0) {
             return new JsonResponse([
                 'errors' => [
                     'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage)
@@ -52,7 +52,20 @@ class ExpenseRestController extends AbstractController
         }
 
         $paginator->setPage($page);
-        $expenses = $this->expenseManager->getPortionExpenses($paginator->getOffset(), $paginator->getLimit());
+        $params['offset'] = $paginator->getOffset();
+        $params['limit'] = $paginator->getLimit();
+
+        $expenses = $this->expenseManager->getFilteredExpenses($params);
+
+        if (empty($expenses)) {
+            return new JsonResponse([
+                'errors' => [
+                    'expenses' => 'Not found'
+                ]
+            ], 400);
+        }
+
+        $selfLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
 
         $paramsToEdit['page'] = 1;
         $firstLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
@@ -72,9 +85,9 @@ class ExpenseRestController extends AbstractController
                 'page' => $paginator->getPage(),
                 'per_page' => $paginator->getLimit(),
                 'page_count' => count($expenses),
-                'total_count' => $allExpensesQuantity,
+                'total_count' => $filteredExpensesQuantity,
                 'Links' => [
-                    'self' => $this->generateUrl('api_expenses_get_all', $params, UrlGeneratorInterface::ABSOLUTE_URL),
+                    'self' => $selfLink,
                     'first' => $firstLink,
                     'previous' => $paginator->isFirstPage() ? '' : $previousLink,
                     'next' => $paginator->isLastPage($lastPage) ? '' : $nextLink,

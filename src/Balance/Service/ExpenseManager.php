@@ -9,6 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ExpenseManager
 {
+    // Added for testing and creating new functionalities - should be deleted when authentication will be implemented
+    CONST TEMPORARY_TEST_AUTHOR_ID = 1;
+
     private $hydrator;
 
     private $hydrationStrategy;
@@ -60,15 +63,15 @@ class ExpenseManager
         $this->entityManager->flush();
     }
 
-    public function getPortionExpenses(int $offset, int $limit): array
+    public function getFilteredExpenses(array $params): array
     {
-        $expenses = $this->entityManager->getRepository(Expense::class)->findPaginated($offset, $limit);
+        $expenses = $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEMPORARY_TEST_AUTHOR_ID, $params);
 
         return $this->hydrator->extractSeveral($expenses, $this->hydrationStrategy);
     }
 
-    public function countExpenses(): int
+    public function countFilteredExpenses(array $params): int
     {
-        return $this->entityManager->getRepository(Expense::class)->countAll();
+        return $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEMPORARY_TEST_AUTHOR_ID, $params, true);
     }
 }
