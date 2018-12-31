@@ -43,7 +43,7 @@ class ExpenseRestController extends AbstractController
 
         $lastPage = $paginator->calculateLastPage($filteredExpensesQuantity);
 
-        if ($page < 1 || $page > $lastPage && $lastPage > 0) {
+        if ($page < 1 || ($page > $lastPage && $lastPage > 0)) {
             return new JsonResponse([
                 'errors' => [
                     'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage)

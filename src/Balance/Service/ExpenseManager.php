@@ -9,8 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ExpenseManager
 {
-    // Added for testing and creating new functionalities - should be deleted when authentication will be implemented
-    CONST TEMPORARY_TEST_AUTHOR_ID = 1;
+    // Test author ID - added for creating new features - should be deleted when authentication will be implemented
+    CONST TEST_ID = 1;
 
     private $hydrator;
 
@@ -65,13 +65,13 @@ class ExpenseManager
 
     public function getFilteredExpenses(array $params): array
     {
-        $expenses = $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEMPORARY_TEST_AUTHOR_ID, $params);
+        $expenses = $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEST_ID, $params);
 
         return $this->hydrator->extractSeveral($expenses, $this->hydrationStrategy);
     }
 
     public function countFilteredExpenses(array $params): int
     {
-        return $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEMPORARY_TEST_AUTHOR_ID, $params, true);
+        return $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEST_ID, $params, true);
     }
 }
