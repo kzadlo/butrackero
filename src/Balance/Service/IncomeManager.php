@@ -60,15 +60,15 @@ class IncomeManager
         $this->entityManager->flush();
     }
 
-    public function getPortionIncomes(int $offset, int $limit): array
+    public function getFilteredIncomes(array $params): array
     {
-        $incomes = $this->entityManager->getRepository(Income::class)->findPaginated($offset, $limit);
+        $incomes = $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters(ExpenseManager::TEST_ID, $params);
 
         return $this->hydrator->extractSeveral($incomes, $this->hydrationStrategy);
     }
 
-    public function countIncomes(): int
+    public function countFilteredIncomes(array $params): int
     {
-        return $this->entityManager->getRepository(Income::class)->countAll();
+        return $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters(ExpenseManager::TEST_ID, $params, true);
     }
 }

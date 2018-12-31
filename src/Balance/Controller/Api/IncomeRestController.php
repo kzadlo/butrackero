@@ -39,11 +39,11 @@ class IncomeRestController extends AbstractController
         $params = $request->query->all();
         $paramsToEdit = $params;
 
-        $allIncomesQuantity = $this->incomeManager->countIncomes();
+        $filteredIncomesQuantity = $this->incomeManager->countFilteredIncomes($params);
 
-        $lastPage = $paginator->calculateLastPage($allIncomesQuantity);
+        $lastPage = $paginator->calculateLastPage($filteredIncomesQuantity);
 
-        if ($page < 1 || $page > $lastPage) {
+        if ($page < 1 || ($page > $lastPage && $lastPage > 0)) {
             return new JsonResponse([
                 'errors' => [
                     'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage)
@@ -52,7 +52,20 @@ class IncomeRestController extends AbstractController
         }
 
         $paginator->setPage($page);
-        $incomes = $this->incomeManager->getPortionIncomes($paginator->getOffset(), $paginator->getLimit());
+        $params['offset'] = $paginator->getOffset();
+        $params['limit'] = $paginator->getLimit();
+
+        $incomes = $this->incomeManager->getFilteredIncomes($params);
+
+        if (empty($incomes)) {
+            return new JsonResponse([
+                'errors' => [
+                    'incomes' => 'Not found'
+                ]
+            ], 400);
+        }
+
+        $selfLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
 
         $paramsToEdit['page'] = 1;
         $firstLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
@@ -72,9 +85,9 @@ class IncomeRestController extends AbstractController
                 'page' => $paginator->getPage(),
                 'per_page' => $paginator->getLimit(),
                 'page_count' => count($incomes),
-                'total_count' => $allIncomesQuantity,
+                'total_count' => $filteredIncomesQuantity,
                 'Links' => [
-                    'self' => $this->generateUrl('api_incomes_get_all', $params, UrlGeneratorInterface::ABSOLUTE_URL),
+                    'self' => $selfLink,
                     'first' => $firstLink,
                     'previous' => $paginator->isFirstPage() ? '' : $previousLink,
                     'next' => $paginator->isLastPage($lastPage) ? '' : $nextLink,
