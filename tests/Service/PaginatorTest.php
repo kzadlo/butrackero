@@ -26,41 +26,41 @@ class PaginatorTest extends TestCase
 
     public function testPageAndLimitAreSetInConstructor()
     {
-        $this->assertEquals($this->paginator->getPage(), 1);
-        $this->assertEquals($this->paginator->getLimit(), 25);
+        $this->assertSame(1, $this->paginator->getPage());
+        $this->assertSame(25, $this->paginator->getLimit());
     }
 
     public function testCanGetPage()
     {
         $this->paginator->setPage(5);
 
-        $this->assertEquals($this->paginator->getPage(), 5);
+        $this->assertSame(5, $this->paginator->getPage());
     }
 
     public function testCanGetLimit()
     {
         $this->paginator->setLimit(15);
 
-        $this->assertEquals($this->paginator->getLimit(), 15);
+        $this->assertSame(15, $this->paginator->getLimit());
     }
 
     public function testCanGetOffset()
     {
         $offsetWhenFirstPage = 0;
-        $this->assertEquals($this->paginator->getOffset(), $offsetWhenFirstPage);
+        $this->assertSame($offsetWhenFirstPage, $this->paginator->getOffset());
 
         $offsetWhenSecondPage = 25;
         $this->paginator->setPage(2);
-        $this->assertEquals($this->paginator->getOffset(), $offsetWhenSecondPage);
+        $this->assertSame($offsetWhenSecondPage, $this->paginator->getOffset());
     }
 
     public function testCalculateLastPage()
     {
         $allItems = 50;
-        $this->assertEquals($this->paginator->calculateLastPage($allItems), 2);
+        $this->assertSame(2, $this->paginator->calculateLastPage($allItems));
 
         $allItems = 51;
-        $this->assertEquals($this->paginator->calculateLastPage($allItems), 3);
+        $this->assertSame(3, $this->paginator->calculateLastPage($allItems));
     }
 
     public function testIsFirstPage()
@@ -82,12 +82,12 @@ class PaginatorTest extends TestCase
     public function testCanGetNextPage()
     {
         $this->paginator->setPage(10);
-        $this->assertEquals($this->paginator->nextPage(), 11);
+        $this->assertSame(11, $this->paginator->nextPage());
     }
 
     public function testCanGetPreviousPage()
     {
         $this->paginator->setPage(10);
-        $this->assertEquals($this->paginator->previousPage(), 9);
+        $this->assertSame(9, $this->paginator->previousPage());
     }
 }

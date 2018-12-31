@@ -25,7 +25,7 @@ class ExpenseTest extends TestCase
     public function testCreatedDateSetsInConstructorIsCurrent()
     {
         $this->assertInstanceOf(\DateTimeInterface::class, $this->expense->getCreated());
-        $this->assertEquals(
+        $this->assertSame(
             (new \DateTime())->format('Y-m-d H:i:s'),
             $this->expense->getCreated()->format('Y-m-d H:i:s')
         );
@@ -35,7 +35,7 @@ class ExpenseTest extends TestCase
     {
         $this->expense->setAmount(50);
 
-        $this->assertEquals($this->expense->getAmount(), 50.00);
+        $this->assertSame(50.00, $this->expense->getAmount());
     }
 
     public function testCanGetCategory()
@@ -43,7 +43,7 @@ class ExpenseTest extends TestCase
         $category = new ExpenseCategory();
         $this->expense->setCategory($category);
 
-        $this->assertEquals($this->expense->getCategory(), $category);
+        $this->assertSame($category, $this->expense->getCategory());
     }
 
     public function testCanSetOnlyOneCategory()
@@ -53,13 +53,13 @@ class ExpenseTest extends TestCase
         $this->expense->setCategory($firstCategory);
         $this->expense->setCategory($secondCategory);
 
-        $this->assertEquals($this->expense->getCategory(), $secondCategory);
+        $this->assertSame($secondCategory, $this->expense->getCategory());
     }
 
     public function testCanGetCreated()
     {
         $this->expense->setCreated(new \DateTime('2018-11-20'));
 
-        $this->assertEquals($this->expense->getCreated(), new \DateTime('2018-11-20'));
+        $this->assertEquals(new \DateTime('2018-11-20'), $this->expense->getCreated());
     }
 }

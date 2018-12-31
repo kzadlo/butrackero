@@ -25,7 +25,7 @@ class IncomeTest extends TestCase
     public function testCreatedDateSetsInConstructorIsCurrent()
     {
         $this->assertInstanceOf(\DateTimeInterface::class, $this->income->getCreated());
-        $this->assertEquals(
+        $this->assertSame(
             (new \DateTime())->format('Y-m-d H:i:s'),
             $this->income->getCreated()->format('Y-m-d H:i:s')
         );
@@ -35,7 +35,7 @@ class IncomeTest extends TestCase
     {
         $this->income->setAmount(50);
 
-        $this->assertEquals($this->income->getAmount(), 50.00);
+        $this->assertSame(50.00, $this->income->getAmount());
     }
 
     public function testCanGetType()
@@ -43,7 +43,7 @@ class IncomeTest extends TestCase
         $type = new IncomeType();
         $this->income->setType($type);
 
-        $this->assertEquals($this->income->getType(), $type);
+        $this->assertSame($type, $this->income->getType());
     }
 
     public function testCanSetOnlyOneType()
@@ -53,13 +53,13 @@ class IncomeTest extends TestCase
         $this->income->setType($firstType);
         $this->income->setType($secondType);
 
-        $this->assertEquals($this->income->getType(), $secondType);
+        $this->assertSame($secondType, $this->income->getType());
     }
 
     public function testCanGetCreated()
     {
         $this->income->setCreated(new \DateTime('2018-11-20'));
 
-        $this->assertEquals($this->income->getCreated(), new \DateTime('2018-11-20'));
+        $this->assertEquals(new \DateTime('2018-11-20'), $this->income->getCreated());
     }
 }

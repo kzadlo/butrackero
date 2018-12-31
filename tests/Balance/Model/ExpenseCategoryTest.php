@@ -36,21 +36,21 @@ class ExpenseCategoryTest extends TestCase
         echo $this->expenseCategory;
         $toString = ob_get_clean();
 
-        $this->assertEquals($toString, 'CategoryName');
+        $this->assertSame('CategoryName', $toString);
     }
 
     public function testCanGetName()
     {
         $this->expenseCategory->setName('CategoryName');
 
-        $this->assertEquals($this->expenseCategory->getName(), 'CategoryName');
+        $this->assertSame('CategoryName', $this->expenseCategory->getName());
     }
 
     public function testCanGetDescription()
     {
         $this->expenseCategory->setDescription('This is description');
 
-        $this->assertEquals($this->expenseCategory->getDescription(), 'This is description');
+        $this->assertSame('This is description', $this->expenseCategory->getDescription());
     }
 
     public function testCanCheckThatHasDescription()

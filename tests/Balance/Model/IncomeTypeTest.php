@@ -36,21 +36,21 @@ class IncomeTypeTest extends TestCase
         echo $this->incomeType;
         $toString = ob_get_clean();
 
-        $this->assertEquals($toString, 'TypeName');
+        $this->assertSame('TypeName', $toString);
     }
 
     public function testCanGetName()
     {
         $this->incomeType->setName('TypeName');
 
-        $this->assertEquals($this->incomeType->getName(), 'TypeName');
+        $this->assertSame('TypeName', $this->incomeType->getName());
     }
 
     public function testCanGetDescription()
     {
         $this->incomeType->setDescription('This is description');
 
-        $this->assertEquals($this->incomeType->getDescription(), 'This is description');
+        $this->assertSame('This is description', $this->incomeType->getDescription());
     }
 
     public function testCanCheckThatHasDescription()
