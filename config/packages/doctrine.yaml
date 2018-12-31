@@ -24,12 +24,12 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
         mappings:
-#            Application\:
-#                is_bundle: false
-#                type: annotation
-#                dir: '%kernel.project_dir%/src/Model'
-#                prefix: 'App\Application\Model\'
-#                alias: Application
+            Application\:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Application/Model'
+                prefix: 'App\Application\Model'
+                alias: Application
             App\Balance:
                 is_bundle: false
                 type: annotation

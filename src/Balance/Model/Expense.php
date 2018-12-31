@@ -2,6 +2,7 @@
 
 namespace App\Balance\Model;
 
+use App\Application\Model\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,6 +29,12 @@ class Expense implements BalanceEntityInterface
 
     /** @ORM\Column(type="datetime") */
     private $created;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Application\Model\User")
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=true)
+     */
+    private $author;
 
     public function __construct()
     {
@@ -70,6 +77,17 @@ class Expense implements BalanceEntityInterface
     public function setCreated(\DateTimeInterface $created): Expense
     {
         $this->created = $created;
+        return $this;
+    }
+
+    public function getAuthor(): User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(User $author): Expense
+    {
+        $this->author = $author;
         return $this;
     }
 }

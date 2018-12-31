@@ -2,6 +2,7 @@
 
 namespace App\Balance\Model;
 
+use App\Application\Model\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,6 +28,12 @@ class ExpenseCategory implements BalanceEntityInterface
 
     /** @ORM\OneToMany(targetEntity="Expense", mappedBy="category", cascade={"persist"}) */
     private $expenses;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Application\Model\User")
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=true)
+     */
+    private $author;
 
     public function __construct()
     {
@@ -101,5 +108,16 @@ class ExpenseCategory implements BalanceEntityInterface
     public function hasExpenses(): bool
     {
         return !$this->expenses->isEmpty();
+    }
+
+    public function getAuthor(): User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(User $author): ExpenseCategory
+    {
+        $this->author = $author;
+        return $this;
     }
 }
