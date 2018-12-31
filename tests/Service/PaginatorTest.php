@@ -2,8 +2,8 @@
 
 namespace App\Tests\Service;
 
-use App\Service\Paginator;
-use App\Service\PaginatorInterface;
+use App\Application\Service\Paginator;
+use App\Application\Service\PaginatorInterface;
 use PHPUnit\Framework\TestCase;
 
 class PaginatorTest extends TestCase

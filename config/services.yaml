@@ -3,8 +3,8 @@
 
 parameters:
     locale: 'en'
-    page: 1
-    limit: 25
+    paginator.page: 1
+    paginator.limit: 25
 
 services:
     _defaults:
@@ -16,21 +16,18 @@ services:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
-    App\Controller\:
-        resource: '../src/Controller'
+    App\Application\Controller\:
+        resource: '../src/Application/Controller'
         tags: ['controller.service_arguments']
 
-    App\Service\:
-        resource: '../src/Service'
+    App\Application\Service\:
+        resource: '../src/Application/Service'
         tags: ['paginator.service_arguments']
-        arguments: ['%page%', '%limit%']
+        arguments: ['%paginator.page%', '%paginator.limit%']
+
+    App\Application\Normalizer\EntityNormalizer:
+        tags: ['serializer.normalizer']
 
     App\Balance\Controller\Api\:
         resource: '../src/Balance/Controller/Api'
         tags: ['controller.service_arguments']
-
-    App\Normalizer\EntityNormalizer:
-        tags: ['serializer.normalizer']
-
-
-

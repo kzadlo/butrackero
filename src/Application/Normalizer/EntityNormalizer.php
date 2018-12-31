@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Normalizer;
+namespace App\Application\Normalizer;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -27,7 +27,7 @@ class EntityNormalizer extends ObjectNormalizer
 
     public function supportsDenormalization($data, $type, $format = null)
     {
-        return (strpos($type, 'App\\Model') === 0) && (is_numeric($data) || is_string($data));
+        return (strpos($type, 'Application\\Model') === 0) && (is_numeric($data) || is_string($data));
     }
 
     public function denormalize($data, $class, $format = null, array $context = [])

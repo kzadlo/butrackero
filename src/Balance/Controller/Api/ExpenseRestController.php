@@ -6,7 +6,7 @@ use App\Balance\Model\Expense;
 use App\Balance\Model\ExpenseCategory;
 use App\Balance\Service\ExpenseManager;
 use App\Balance\Validator\ExpenseValidator;
-use App\Service\PaginatorInterface;
+use App\Application\Service\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

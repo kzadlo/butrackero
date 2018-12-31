@@ -6,7 +6,7 @@ use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
 use App\Balance\Service\IncomeManager;
 use App\Balance\Validator\IncomeValidator;
-use App\Service\PaginatorInterface;
+use App\Application\Service\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
