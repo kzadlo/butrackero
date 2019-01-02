@@ -2,6 +2,8 @@
 
 namespace App\Balance\Controller\Api;
 
+use App\Application\Filter\Filter;
+use App\Balance\Controller\Api\Traits\LinkCreatorTrait;
 use App\Balance\Model\Expense;
 use App\Balance\Model\ExpenseCategory;
 use App\Balance\Service\ExpenseManager;
@@ -12,10 +14,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ExpenseRestController extends AbstractController
 {
+    use LinkCreatorTrait;
+
     private $entityManager;
 
     private $expenseManager;
@@ -33,17 +36,16 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses", methods={"GET"}, name="api_expenses_get_all") */
-    public function getExpenses(Request $request, PaginatorInterface $paginator): JsonResponse
+    public function getExpenses(Request $request, PaginatorInterface $paginator, Filter $filter): JsonResponse
     {
         $page = (int) $request->get('page', 1);
-        $params = $request->query->all();
-        $paramsToEdit = $params;
 
-        $filteredExpensesQuantity = $this->expenseManager->countFilteredExpenses($params);
+        $filter->prepare($request->query->all());
 
+        $filteredExpensesQuantity = $this->expenseManager->countFiltered($filter->getAll());
         $lastPage = $paginator->calculateLastPage($filteredExpensesQuantity);
 
-        if ($page < 1 || ($page > $lastPage && $lastPage > 0)) {
+        if ($paginator->isPageOutOfRange($page, $lastPage)) {
             return new JsonResponse([
                 'errors' => [
                     'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage)
@@ -52,10 +54,12 @@ class ExpenseRestController extends AbstractController
         }
 
         $paginator->setPage($page);
-        $params['offset'] = $paginator->getOffset();
-        $params['limit'] = $paginator->getLimit();
 
-        $expenses = $this->expenseManager->getFilteredExpenses($params);
+        $filter->add('offset', $paginator->getOffset());
+        $filter->add('limit', $paginator->getLimit());
+
+        $filters = $filter->getAll();
+        $expenses = $this->expenseManager->getFiltered($filters);
 
         if (empty($expenses)) {
             return new JsonResponse([
@@ -65,19 +69,7 @@ class ExpenseRestController extends AbstractController
             ], 400);
         }
 
-        $selfLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $paramsToEdit['page'] = 1;
-        $firstLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $paramsToEdit['page'] = $paginator->previousPage();
-        $previousLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $paramsToEdit['page'] = $paginator->nextPage();
-        $nextLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $paramsToEdit['page'] = $lastPage;
-        $lastLink = $this->generateUrl('api_expenses_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+        $route = 'api_expenses_get_all';
 
         return new JsonResponse([
             'expenses' => $expenses,
@@ -87,11 +79,15 @@ class ExpenseRestController extends AbstractController
                 'page_count' => count($expenses),
                 'total_count' => $filteredExpensesQuantity,
                 'Links' => [
-                    'self' => $selfLink,
-                    'first' => $firstLink,
-                    'previous' => $paginator->isFirstPage() ? '' : $previousLink,
-                    'next' => $paginator->isLastPage($lastPage) ? '' : $nextLink,
-                    'last' => $lastLink
+                    'self' => $this->generateLink($route, $filters),
+                    'first' => $this->generateLink($route, $filters, 1),
+                    'previous' => !$paginator->isFirstPage()
+                        ? $this->generateLink($route, $filters, $paginator->previousPage())
+                        : '',
+                    'next' => !$paginator->isLastPage($lastPage)
+                        ? $this->generateLink($route, $filters, $paginator->nextPage())
+                        : '',
+                    'last' => $this->generateLink($route, $filters, $lastPage)
                 ]
             ]
         ]);
@@ -115,7 +111,7 @@ class ExpenseRestController extends AbstractController
             ], 400);
         }
 
-        $this->expenseManager->addExpense($this->expenseManager->createExpenseFromArray($expenseData));
+        $this->expenseManager->save($this->expenseManager->createFromArray($expenseData));
 
         return new JsonResponse([
             'message' => 'The expense has been added successfully!'
@@ -136,7 +132,7 @@ class ExpenseRestController extends AbstractController
         }
 
         return new JsonResponse([
-            $this->expenseManager->getExpenseAsArray($expense)
+            $this->expenseManager->getAsArray($expense)
         ]);
     }
 
@@ -153,7 +149,7 @@ class ExpenseRestController extends AbstractController
             ], 400);
         }
 
-        $this->expenseManager->deleteExpense($expense);
+        $this->expenseManager->delete($expense);
 
         return new JsonResponse([
             'message' => 'The expense has been deleted successfully!'
@@ -185,7 +181,7 @@ class ExpenseRestController extends AbstractController
             ], 400);
         }
 
-        $this->expenseManager->updateExpense($expense, $expenseData);
+        $this->expenseManager->update($expense, $expenseData);
 
         return new JsonResponse([
             'message' => 'The expense has been updated successfully!'

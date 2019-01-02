@@ -90,4 +90,12 @@ class PaginatorTest extends TestCase
         $this->paginator->setPage(10);
         $this->assertSame(9, $this->paginator->previousPage());
     }
+
+    public function testIsPageFromRightRange()
+    {
+        $this->assertTrue($this->paginator->isPageOutOfRange(0, 0));
+        $this->assertTrue($this->paginator->isPageOutOfRange(0, 1));
+        $this->assertTrue($this->paginator->isPageOutOfRange(2, 1));
+        $this->assertFalse($this->paginator->isPageOutOfRange(1, 1));
+    }
 }

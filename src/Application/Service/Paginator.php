@@ -76,4 +76,9 @@ class Paginator implements PaginatorInterface
     {
         return ($this->page - 1);
     }
+
+    public function isPageOutOfRange(int $page, int $lastPage): bool
+    {
+        return ($page < 1) || ($page > $lastPage && $lastPage > 0);
+    }
 }

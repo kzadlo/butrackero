@@ -23,4 +23,6 @@ interface PaginatorInterface
     public function nextPage(): int;
 
     public function previousPage(): int;
+
+    public function isPageOutOfRange(int $page, int $lastPage): bool;
 }

@@ -25,29 +25,29 @@ class IncomeManager
         $this->entityManager = $entityManager;
     }
 
-    public function getIncomeAsArray(Income $income): array
+    public function getAsArray(Income $income): array
     {
         return $this->hydrator->extract($income, $this->hydrationStrategy);
     }
 
-    public function createIncomeFromArray(array $incomeValues): Income
+    public function createFromArray(array $incomeValues): Income
     {
         return $this->hydrator->hydrate($incomeValues, $this->hydrationStrategy);
     }
 
-    public function addIncome(Income $income): void
+    public function save(Income $income): void
     {
         $this->entityManager->persist($income);
         $this->entityManager->flush();
     }
 
-    public function deleteIncome(Income $income): void
+    public function delete(Income $income): void
     {
         $this->entityManager->remove($income);
         $this->entityManager->flush();
     }
 
-    public function updateIncome(Income $income, array $updateValues): void
+    public function update(Income $income, array $updateValues): void
     {
         if (isset($updateValues['amount'])) {
             $income->setAmount($updateValues['amount']);
@@ -60,14 +60,14 @@ class IncomeManager
         $this->entityManager->flush();
     }
 
-    public function getFilteredIncomes(array $params): array
+    public function getFiltered(array $params): array
     {
         $incomes = $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters(ExpenseManager::TEST_ID, $params);
 
         return $this->hydrator->extractSeveral($incomes, $this->hydrationStrategy);
     }
 
-    public function countFilteredIncomes(array $params): int
+    public function countFiltered(array $params): int
     {
         return $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters(ExpenseManager::TEST_ID, $params, true);
     }

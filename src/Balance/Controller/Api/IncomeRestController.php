@@ -2,6 +2,8 @@
 
 namespace App\Balance\Controller\Api;
 
+use App\Application\Filter\Filter;
+use App\Balance\Controller\Api\Traits\LinkCreatorTrait;
 use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
 use App\Balance\Service\IncomeManager;
@@ -12,10 +14,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class IncomeRestController extends AbstractController
 {
+    use LinkCreatorTrait;
+
     private $entityManager;
 
     private $incomeManager;
@@ -33,17 +36,16 @@ class IncomeRestController extends AbstractController
     }
 
     /** @Route("api/incomes", methods={"GET"}, name="api_incomes_get_all") */
-    public function getAllIncomes(Request $request, PaginatorInterface $paginator): JsonResponse
+    public function getAllIncomes(Request $request, PaginatorInterface $paginator, Filter $filter): JsonResponse
     {
         $page = (int) $request->get('page', 1);
-        $params = $request->query->all();
-        $paramsToEdit = $params;
 
-        $filteredIncomesQuantity = $this->incomeManager->countFilteredIncomes($params);
+        $filter->prepare($request->query->all());
 
+        $filteredIncomesQuantity = $this->incomeManager->countFiltered($filter->getAll());
         $lastPage = $paginator->calculateLastPage($filteredIncomesQuantity);
 
-        if ($page < 1 || ($page > $lastPage && $lastPage > 0)) {
+        if ($paginator->isPageOutOfRange($page, $lastPage)) {
             return new JsonResponse([
                 'errors' => [
                     'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage)
@@ -52,10 +54,12 @@ class IncomeRestController extends AbstractController
         }
 
         $paginator->setPage($page);
-        $params['offset'] = $paginator->getOffset();
-        $params['limit'] = $paginator->getLimit();
 
-        $incomes = $this->incomeManager->getFilteredIncomes($params);
+        $filter->add('offset', $paginator->getOffset());
+        $filter->add('limit', $paginator->getLimit());
+
+        $filters = $filter->getAll();
+        $incomes = $this->incomeManager->getFiltered($filters);
 
         if (empty($incomes)) {
             return new JsonResponse([
@@ -65,19 +69,7 @@ class IncomeRestController extends AbstractController
             ], 400);
         }
 
-        $selfLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $paramsToEdit['page'] = 1;
-        $firstLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $paramsToEdit['page'] = $paginator->previousPage();
-        $previousLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $paramsToEdit['page'] = $paginator->nextPage();
-        $nextLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $paramsToEdit['page'] = $lastPage;
-        $lastLink = $this->generateUrl('api_incomes_get_all', $paramsToEdit, UrlGeneratorInterface::ABSOLUTE_URL);
+        $route = 'api_incomes_get_all';
 
         return new JsonResponse([
             'incomes' => $incomes,
@@ -87,11 +79,15 @@ class IncomeRestController extends AbstractController
                 'page_count' => count($incomes),
                 'total_count' => $filteredIncomesQuantity,
                 'Links' => [
-                    'self' => $selfLink,
-                    'first' => $firstLink,
-                    'previous' => $paginator->isFirstPage() ? '' : $previousLink,
-                    'next' => $paginator->isLastPage($lastPage) ? '' : $nextLink,
-                    'last' => $lastLink
+                    'self' => $this->generateLink($route, $filters),
+                    'first' => $this->generateLink($route, $filters, 1),
+                    'previous' => !$paginator->isFirstPage()
+                        ? $this->generateLink($route, $filters, $paginator->previousPage())
+                        : '',
+                    'next' => !$paginator->isLastPage($lastPage)
+                        ? $this->generateLink($route, $filters, $paginator->nextPage())
+                        : '',
+                    'last' => $this->generateLink($route, $filters, $lastPage)
                 ]
             ]
         ]);
@@ -115,7 +111,7 @@ class IncomeRestController extends AbstractController
             ], 400);
         }
 
-        $this->incomeManager->addIncome($this->incomeManager->createIncomeFromArray($incomeData));
+        $this->incomeManager->save($this->incomeManager->createFromArray($incomeData));
 
         return new JsonResponse([
             'message' => 'The income has been added successfully!'
@@ -136,7 +132,7 @@ class IncomeRestController extends AbstractController
         }
 
         return new JsonResponse([
-            $this->incomeManager->getIncomeAsArray($income)
+            $this->incomeManager->getAsArray($income)
         ]);
     }
 
@@ -153,7 +149,7 @@ class IncomeRestController extends AbstractController
             ], 400);
         }
 
-        $this->incomeManager->deleteIncome($income);
+        $this->incomeManager->delete($income);
 
         return new JsonResponse([
             'message' => 'The income has been deleted successfully!'
@@ -185,7 +181,7 @@ class IncomeRestController extends AbstractController
             ], 400);
         }
 
-        $this->incomeManager->updateIncome($income, $incomeData);
+        $this->incomeManager->update($income, $incomeData);
 
         return new JsonResponse([
             'message' => 'The income has been updated successfully!'

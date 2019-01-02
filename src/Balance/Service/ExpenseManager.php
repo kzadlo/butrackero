@@ -28,29 +28,29 @@ class ExpenseManager
         $this->entityManager = $entityManager;
     }
 
-    public function getExpenseAsArray(Expense $expense): array
+    public function getAsArray(Expense $expense): array
     {
         return $this->hydrator->extract($expense, $this->hydrationStrategy);
     }
 
-    public function createExpenseFromArray(array $expenseValues): Expense
+    public function createFromArray(array $expenseValues): Expense
     {
         return $this->hydrator->hydrate($expenseValues, $this->hydrationStrategy);
     }
 
-    public function addExpense(Expense $expense): void
+    public function save(Expense $expense): void
     {
         $this->entityManager->persist($expense);
         $this->entityManager->flush();
     }
 
-    public function deleteExpense(Expense $expense): void
+    public function delete(Expense $expense): void
     {
         $this->entityManager->remove($expense);
         $this->entityManager->flush();
     }
 
-    public function updateExpense(Expense $expense, array $updateValues): void
+    public function update(Expense $expense, array $updateValues): void
     {
         if (isset($updateValues['amount'])) {
             $expense->setAmount($updateValues['amount']);
@@ -63,14 +63,14 @@ class ExpenseManager
         $this->entityManager->flush();
     }
 
-    public function getFilteredExpenses(array $params): array
+    public function getFiltered(array $params): array
     {
         $expenses = $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEST_ID, $params);
 
         return $this->hydrator->extractSeveral($expenses, $this->hydrationStrategy);
     }
 
-    public function countFilteredExpenses(array $params): int
+    public function countFiltered(array $params): int
     {
         return $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEST_ID, $params, true);
     }
