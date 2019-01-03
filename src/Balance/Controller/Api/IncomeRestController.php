@@ -48,7 +48,7 @@ class IncomeRestController extends AbstractController
         if ($paginator->isPageOutOfRange($page, $lastPage)) {
             return new JsonResponse([
                 'errors' => [
-                    'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage)
+                    'page' => sprintf('This value should be greater than 0 and less than %d', $lastPage+1)
                 ]
             ], 400);
         }

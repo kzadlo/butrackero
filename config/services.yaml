@@ -2,7 +2,6 @@
 # Files in the packages/ subdirectory configure your dependencies.
 
 parameters:
-    locale: 'en'
     paginator.page: 1
     paginator.limit: 25
 
