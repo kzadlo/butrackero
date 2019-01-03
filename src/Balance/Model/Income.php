@@ -23,7 +23,7 @@ class Income implements BalanceEntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="IncomeType", inversedBy="incomes")
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="id")
      */
     private $type;
 

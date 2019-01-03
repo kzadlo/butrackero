@@ -23,7 +23,7 @@ class Expense implements BalanceEntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="ExpenseCategory", inversedBy="expenses")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     private $category;
 
