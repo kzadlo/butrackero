@@ -19,8 +19,7 @@ services:
         resource: '../src/Application/Controller'
         tags: ['controller.service_arguments']
 
-    App\Application\Service\:
-        resource: '../src/Application/Service'
+    App\Application\Service\Paginator:
         tags: ['paginator.service_arguments']
         arguments: ['%paginator.page%', '%paginator.limit%']
 

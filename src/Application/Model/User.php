@@ -2,8 +2,6 @@
 
 namespace App\Application\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -29,25 +27,15 @@ class User implements UserInterface
     /** @ORM\Column(type="string") */
     private $password;
 
-    /** @ORM\OneToMany(targetEntity="Role", mappedBy="user") */
-    private $roles;
-
-    /** @ORM\Column(type="string") */
+    /** @ORM\Column(type="string", nullable=true) */
     private $token;
 
     /** @ORM\Column(type="string") */
     private $active;
 
-    public function __construct(
-        string $username,
-        string $password,
-        array $roles,
-        string $token
-    ) {
+    public function __construct(string $username)
+    {
         $this->username = $username;
-        $this->password = $password;
-        $this->roles = new ArrayCollection($roles);
-        $this->token = $token;
 
         $this->activate();
     }
@@ -73,43 +61,15 @@ class User implements UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): UserInterface
+    public function setPassword(string $hashedPassword): UserInterface
     {
-        $this->password = $password;
+        $this->password = $hashedPassword;
         return $this;
     }
 
-    public function getRoles(): Collection
+    public function getRoles(): array
     {
-        return $this->roles;
-    }
-
-    public function addRole(Role $role): UserInterface
-    {
-        if (!$this->hasRole($role)) {
-            $this->roles->add($role);
-        }
-
-        return $this;
-    }
-
-    public function removeRole(Role $role): UserInterface
-    {
-        if ($this->hasRole($role)) {
-            $this->roles->removeElement($role);
-        }
-
-        return $this;
-    }
-
-    public function hasRole(Role $role): bool
-    {
-        return $this->roles->contains($role);
-    }
-
-    public function hasRoles(): bool
-    {
-        return !$this->roles->isEmpty();
+        return ['ROLE_USER'];
     }
 
     public function getToken(): string
@@ -140,13 +100,13 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
-        return;
+        return null;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): ?string
     {
-        return;
+        return null;
     }
 }

@@ -1,3 +1,2 @@
-#index:
-#    path: /
-#    controller: Application\Controller\DefaultController::index
+api_jwt_auth:
+  path: /api/auth
