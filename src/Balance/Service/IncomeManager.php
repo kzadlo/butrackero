@@ -2,10 +2,12 @@
 
 namespace App\Balance\Service;
 
+use App\Application\Service\UserManager;
 use App\Balance\Model\Income;
 use App\Balance\Hydrator\BalanceHydrator;
 use App\Balance\Hydrator\IncomeHydratorStrategy;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class IncomeManager
 {
@@ -15,14 +17,18 @@ class IncomeManager
 
     private $entityManager;
 
+    private $userManager;
+
     public function __construct(
         BalanceHydrator $hydrator,
         IncomeHydratorStrategy $strategy,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserManager $userManager
     ) {
         $this->hydrator = $hydrator;
         $this->hydrationStrategy = $strategy;
         $this->entityManager = $entityManager;
+        $this->userManager = $userManager;
     }
 
     public function getAsArray(Income $income): array
@@ -62,13 +68,30 @@ class IncomeManager
 
     public function getFiltered(array $params): array
     {
-        $incomes = $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters(ExpenseManager::TEST_ID, $params);
+        $author = $this->getIncomeAuthor();
+
+        if (!$author) {
+            return [];
+        }
+
+        $incomes = $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($incomes, $this->hydrationStrategy);
     }
 
     public function countFiltered(array $params): int
     {
-        return $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters(ExpenseManager::TEST_ID, $params, true);
+        $author = $this->getIncomeAuthor();
+
+        if (!$author) {
+            return 0;
+        }
+
+        return $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters($author->getId(), $params, true);
+    }
+
+    public function getIncomeAuthor(): ?UserInterface
+    {
+        return $this->userManager->getCurrentUser();
     }
 }

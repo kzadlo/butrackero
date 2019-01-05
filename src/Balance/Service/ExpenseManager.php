@@ -2,30 +2,33 @@
 
 namespace App\Balance\Service;
 
+use App\Application\Service\UserManager;
 use App\Balance\Model\Expense;
 use App\Balance\Hydrator\BalanceHydrator;
 use App\Balance\Hydrator\ExpenseHydratorStrategy;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ExpenseManager
 {
-    // Test author ID - added for creating new features - should be deleted when authentication will be implemented
-    CONST TEST_ID = 1;
-
     private $hydrator;
 
     private $hydrationStrategy;
 
     private $entityManager;
 
+    private $userManager;
+
     public function __construct(
         BalanceHydrator $hydrator,
         ExpenseHydratorStrategy $strategy,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserManager $userManager
     ) {
         $this->hydrator = $hydrator;
         $this->hydrationStrategy = $strategy;
         $this->entityManager = $entityManager;
+        $this->userManager = $userManager;
     }
 
     public function getAsArray(Expense $expense): array
@@ -65,13 +68,30 @@ class ExpenseManager
 
     public function getFiltered(array $params): array
     {
-        $expenses = $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEST_ID, $params);
+        $author = $this->getExpenseAuthor();
+
+        if (!$author) {
+            return [];
+        }
+
+        $expenses = $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($expenses, $this->hydrationStrategy);
     }
 
     public function countFiltered(array $params): int
     {
-        return $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters(self::TEST_ID, $params, true);
+        $author = $this->getExpenseAuthor();
+
+        if (!$author) {
+            return 0;
+        }
+
+        return $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters($author->getId(), $params, true);
+    }
+
+    public function getExpenseAuthor(): ?UserInterface
+    {
+        return $this->userManager->getCurrentUser();
     }
 }

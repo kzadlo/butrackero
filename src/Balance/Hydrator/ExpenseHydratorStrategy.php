@@ -22,6 +22,7 @@ class ExpenseHydratorStrategy implements HydrationStrategyInterface
     {
         return (new Expense())
             ->setAmount($data['amount'])
-            ->setCategory($data['category']);
+            ->setCategory($data['category'])
+            ->setAuthor($data['author']);
     }
 }

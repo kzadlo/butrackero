@@ -22,6 +22,7 @@ class IncomeHydratorStrategy implements HydrationStrategyInterface
     {
         return (new Income())
             ->setAmount($data['amount'])
-            ->setType($data['type']);
+            ->setType($data['type'])
+            ->setAuthor($data['author']);
     }
 }

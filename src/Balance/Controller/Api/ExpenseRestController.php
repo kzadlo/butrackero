@@ -111,6 +111,8 @@ class ExpenseRestController extends AbstractController
             ], 400);
         }
 
+        $expenseData['author'] = $this->expenseManager->getExpenseAuthor();
+
         $this->expenseManager->save($this->expenseManager->createFromArray($expenseData));
 
         return new JsonResponse([

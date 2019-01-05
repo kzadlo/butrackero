@@ -111,6 +111,8 @@ class IncomeRestController extends AbstractController
             ], 400);
         }
 
+        $incomeData['author'] = $this->incomeManager->getIncomeAuthor();
+
         $this->incomeManager->save($this->incomeManager->createFromArray($incomeData));
 
         return new JsonResponse([

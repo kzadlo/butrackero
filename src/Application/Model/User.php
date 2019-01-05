@@ -27,9 +27,6 @@ class User implements UserInterface
     /** @ORM\Column(type="string") */
     private $password;
 
-    /** @ORM\Column(type="string", nullable=true) */
-    private $token;
-
     /** @ORM\Column(type="string") */
     private $active;
 
@@ -70,17 +67,6 @@ class User implements UserInterface
     public function getRoles(): array
     {
         return ['ROLE_USER'];
-    }
-
-    public function getToken(): string
-    {
-        return $this->token;
-    }
-
-    public function setToken(string $token): UserInterface
-    {
-        $this->token = $token;
-        return $this;
     }
 
     public function isActive(): bool
