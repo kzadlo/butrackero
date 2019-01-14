@@ -40,7 +40,7 @@ abstract class AbstractBalanceValidator implements ValidationInterface
 
     public function isGreaterThanZero(float $number): bool
     {
-        return $number > 0.00;
+        return ($number > 0.00);
     }
 
     public function isNull($value): bool
@@ -56,5 +56,10 @@ abstract class AbstractBalanceValidator implements ValidationInterface
     public function isInt($value): bool
     {
         return is_int($value);
+    }
+
+    public function isShorterThan(string $value, int $length): bool
+    {
+        return (strlen($value) < $length);
     }
 }

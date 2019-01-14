@@ -11,6 +11,7 @@ interface ValidationInterface
     CONST MESSAGE_IS_NULL = "This value can't be null";
     CONST MESSAGE_IS_NOT_FLOAT = "This value has to be float";
     CONST MESSAGE_IS_NOT_INT = "This value has to be int";
+    CONST MESSAGE_IS_SHORTER_THAN = "This value has to shorter";
 
     public function validate(array $object): void;
 }
