@@ -2,11 +2,13 @@
 
 namespace App\Tests\Balance\Model;
 
+use App\Application\Model\User;
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Expense;
 use App\Balance\Model\ExpenseCategory;
 use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ExpenseCategoryTest extends TestCase
 {
@@ -122,5 +124,13 @@ class ExpenseCategoryTest extends TestCase
 
         $this->expenseCategory->addExpense(new Expense());
         $this->assertTrue($this->expenseCategory->hasExpenses());
+    }
+
+    public function testCanGetAuthor()
+    {
+        $this->assertNull($this->expenseCategory->getAuthor());
+
+        $this->expenseCategory->setAuthor(new User('Tester'));
+        $this->assertInstanceOf(UserInterface::class, $this->expenseCategory->getAuthor());
     }
 }

@@ -2,10 +2,12 @@
 
 namespace App\Tests\Balance\Model;
 
+use App\Application\Model\User;
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class IncomeTest extends TestCase
 {
@@ -61,5 +63,13 @@ class IncomeTest extends TestCase
         $this->income->setCreated(new \DateTime('2018-11-20'));
 
         $this->assertEquals(new \DateTime('2018-11-20'), $this->income->getCreated());
+    }
+
+    public function testCanGetAuthor()
+    {
+        $this->assertNull($this->income->getAuthor());
+
+        $this->income->setAuthor(new User('Tester'));
+        $this->assertInstanceOf(UserInterface::class, $this->income->getAuthor());
     }
 }

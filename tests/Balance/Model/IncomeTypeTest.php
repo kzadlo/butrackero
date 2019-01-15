@@ -2,11 +2,13 @@
 
 namespace App\Tests\Balance\Model;
 
+use App\Application\Model\User;
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
 use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class IncomeTypeTest extends TestCase
 {
@@ -122,5 +124,13 @@ class IncomeTypeTest extends TestCase
 
         $this->incomeType->addIncome(new Income());
         $this->assertTrue($this->incomeType->hasIncomes());
+    }
+
+    public function testCanGetAuthor()
+    {
+        $this->assertNull($this->incomeType->getAuthor());
+
+        $this->incomeType->setAuthor(new User('Tester'));
+        $this->assertInstanceOf(UserInterface::class, $this->incomeType->getAuthor());
     }
 }
