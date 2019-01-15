@@ -4,6 +4,7 @@ namespace App\Balance\Model;
 
 use App\Application\Model\User;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Balance\Repository\IncomeRepository")
@@ -80,7 +81,7 @@ class Income implements BalanceEntityInterface
         return $this;
     }
 
-    public function getAuthor(): User
+    public function getAuthor(): ?UserInterface
     {
         return $this->author;
     }
