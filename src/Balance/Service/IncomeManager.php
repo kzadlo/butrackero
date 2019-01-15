@@ -63,7 +63,7 @@ class IncomeManager
             $income->setType($updateValues['type']);
         }
 
-        $this->entityManager->flush();
+        $this->save($income);
     }
 
     public function getFiltered(array $params): array

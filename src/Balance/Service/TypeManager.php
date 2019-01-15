@@ -63,7 +63,7 @@ class TypeManager
             $type->setDescription($updateValues['description']);
         }
 
-        $this->entityManager->flush();
+        $this->save($type);
     }
 
     public function getFiltered(array $params): array

@@ -63,7 +63,7 @@ class ExpenseManager
             $expense->setCategory($updateValues['category']);
         }
 
-        $this->entityManager->flush();
+        $this->save($expense);
     }
 
     public function getFiltered(array $params): array

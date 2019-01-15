@@ -63,7 +63,7 @@ class CategoryManager
             $category->setDescription($updateValues['description']);
         }
 
-        $this->entityManager->flush();
+        $this->save($category);
     }
 
     public function getFiltered(array $params): array
