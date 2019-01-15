@@ -153,7 +153,7 @@ class IncomeTypeRestController extends AbstractController
         ]);
     }
 
-    /** @Route("api/income-types/{id}", methods={"PUT", "PATCH"}, name="api_income_types_update") */
+    /** @Route("api/income-types/{id}", methods={"PATCH"}, name="api_income_types_update") */
     public function updateType(int $id, Request $request): JsonResponse
     {
         $typeData = json_decode($request->getContent(), true);

@@ -153,7 +153,7 @@ class ExpenseCategoryRestController extends AbstractController
         ]);
     }
 
-    /** @Route("api/expense-categories/{id}", methods={"PUT", "PATCH"}, name="api_expense_categories_update") */
+    /** @Route("api/expense-categories/{id}", methods={"PATCH"}, name="api_expense_categories_update") */
     public function updateCategory(int $id, Request $request): JsonResponse
     {
         $categoryData = json_decode($request->getContent(), true);

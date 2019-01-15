@@ -158,7 +158,7 @@ class ExpenseRestController extends AbstractController
         ]);
     }
 
-    /** @Route("api/expenses/{id}", methods={"PUT", "PATCH"}, name="api_expenses_update") */
+    /** @Route("api/expenses/{id}", methods={"PATCH"}, name="api_expenses_update") */
     public function updateExpense(int $id, Request $request): JsonResponse
     {
         $expenseData = json_decode($request->getContent(), true);
