@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service;
+namespace App\Tests\Application\Service;
 
 use App\Application\Service\Paginator;
 use App\Application\Service\PaginatorInterface;
