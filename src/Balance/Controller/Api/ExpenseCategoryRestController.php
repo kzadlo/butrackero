@@ -35,7 +35,7 @@ class ExpenseCategoryRestController extends AbstractController
     }
 
     /** @Route("api/expense-categories", methods={"GET"}, name="api_expense_categories_get_all") */
-    public function getCategories(Request $request, PaginatorInterface $paginator, Filter $filter): JsonResponse
+    public function getAll(Request $request, PaginatorInterface $paginator, Filter $filter): JsonResponse
     {
         $page = (int) $request->get('page', 1);
 
@@ -93,7 +93,7 @@ class ExpenseCategoryRestController extends AbstractController
     }
 
     /** @Route("api/expense-categories", methods={"POST"}, name="api_expense_categories_add") */
-    public function addCategory(Request $request): JsonResponse
+    public function add(Request $request): JsonResponse
     {
         $categoryData = json_decode($request->getContent(), true);
 
@@ -115,7 +115,7 @@ class ExpenseCategoryRestController extends AbstractController
     }
 
     /** @Route("api/expense-categories/{id}", methods={"GET"}, name="api_expense_categories_get") */
-    public function getCategory(int $id): JsonResponse
+    public function getBy(int $id): JsonResponse
     {
         $category = $this->entityManager->find(ExpenseCategory::class, $id);
 
@@ -133,7 +133,7 @@ class ExpenseCategoryRestController extends AbstractController
     }
 
     /** @Route("api/expense-categories/{id}", methods={"DELETE"}, name="api_expense_categories_delete") */
-    public function deleteCategory(int $id): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         $category = $this->entityManager->find(ExpenseCategory::class, $id);
 
@@ -154,7 +154,7 @@ class ExpenseCategoryRestController extends AbstractController
     }
 
     /** @Route("api/expense-categories/{id}", methods={"PATCH"}, name="api_expense_categories_update") */
-    public function updateCategory(int $id, Request $request): JsonResponse
+    public function update(int $id, Request $request): JsonResponse
     {
         $categoryData = json_decode($request->getContent(), true);
 

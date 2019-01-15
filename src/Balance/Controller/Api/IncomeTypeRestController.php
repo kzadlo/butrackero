@@ -35,7 +35,7 @@ class IncomeTypeRestController extends AbstractController
     }
 
     /** @Route("api/income-types", methods={"GET"}, name="api_income_types_get_all") */
-    public function getTypes(Request $request, PaginatorInterface $paginator, Filter $filter): JsonResponse
+    public function getAll(Request $request, PaginatorInterface $paginator, Filter $filter): JsonResponse
     {
         $page = (int) $request->get('page', 1);
 
@@ -93,7 +93,7 @@ class IncomeTypeRestController extends AbstractController
     }
 
     /** @Route("api/income-types", methods={"POST"}, name="api_income_types_add") */
-    public function addType(Request $request): JsonResponse
+    public function add(Request $request): JsonResponse
     {
         $typeData = json_decode($request->getContent(), true);
 
@@ -115,7 +115,7 @@ class IncomeTypeRestController extends AbstractController
     }
 
     /** @Route("api/income-types/{id}", methods={"GET"}, name="api_income_types_get") */
-    public function getType(int $id): JsonResponse
+    public function getBy(int $id): JsonResponse
     {
         $type = $this->entityManager->find(IncomeType::class, $id);
 
@@ -133,7 +133,7 @@ class IncomeTypeRestController extends AbstractController
     }
 
     /** @Route("api/income-types/{id}", methods={"DELETE"}, name="api_income_types_delete") */
-    public function deleteType(int $id): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         $type = $this->entityManager->find(IncomeType::class, $id);
 
@@ -154,7 +154,7 @@ class IncomeTypeRestController extends AbstractController
     }
 
     /** @Route("api/income-types/{id}", methods={"PATCH"}, name="api_income_types_update") */
-    public function updateType(int $id, Request $request): JsonResponse
+    public function update(int $id, Request $request): JsonResponse
     {
         $typeData = json_decode($request->getContent(), true);
 

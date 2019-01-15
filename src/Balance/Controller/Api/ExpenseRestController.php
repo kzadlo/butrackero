@@ -36,7 +36,7 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses", methods={"GET"}, name="api_expenses_get_all") */
-    public function getExpenses(Request $request, PaginatorInterface $paginator, Filter $filter): JsonResponse
+    public function getAll(Request $request, PaginatorInterface $paginator, Filter $filter): JsonResponse
     {
         $page = (int) $request->get('page', 1);
 
@@ -94,7 +94,7 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses", methods={"POST"}, name="api_expenses_add") */
-    public function addExpense(Request $request): JsonResponse
+    public function add(Request $request): JsonResponse
     {
         $expenseData = json_decode($request->getContent(), true);
 
@@ -121,7 +121,7 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses/{id}", methods={"GET"}, name="api_expenses_get") */
-    public function getExpense(int $id): JsonResponse
+    public function getBy(int $id): JsonResponse
     {
         $expense = $this->entityManager->find(Expense::class, $id);
 
@@ -139,7 +139,7 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses/{id}", methods={"DELETE"}, name="api_expenses_delete") */
-    public function deleteExpense(int $id): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         $expense = $this->entityManager->find(Expense::class, $id);
 
@@ -159,7 +159,7 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses/{id}", methods={"PATCH"}, name="api_expenses_update") */
-    public function updateExpense(int $id, Request $request): JsonResponse
+    public function update(int $id, Request $request): JsonResponse
     {
         $expenseData = json_decode($request->getContent(), true);
 
