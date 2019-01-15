@@ -62,4 +62,13 @@ class TypeValidator extends AbstractBalanceValidator
             $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_OBJECT_NOT_EXISTS);
         }
     }
+
+    public function validateTypeHasIncomes(?IncomeType $type): void
+    {
+        if ($this->isObjectExists($type)) {
+            if (!$this->isArrayEmpty($type->getIncomes()->toArray())) {
+                $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_OBJECT_HAS_RELATION);
+            }
+        }
+    }
 }

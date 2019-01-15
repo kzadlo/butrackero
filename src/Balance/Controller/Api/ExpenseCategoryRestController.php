@@ -138,6 +138,7 @@ class ExpenseCategoryRestController extends AbstractController
         $category = $this->entityManager->find(ExpenseCategory::class, $id);
 
         $this->categoryValidator->validateCategoryExists($category);
+        $this->categoryValidator->validateCategoryHasExpenses($category);
 
         if (!$this->categoryValidator->isValid()) {
             return new JsonResponse([

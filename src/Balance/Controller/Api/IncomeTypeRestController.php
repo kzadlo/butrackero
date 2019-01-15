@@ -138,6 +138,7 @@ class IncomeTypeRestController extends AbstractController
         $type = $this->entityManager->find(IncomeType::class, $id);
 
         $this->typeValidator->validateTypeExists($type);
+        $this->typeValidator->validateTypeHasIncomes($type);
 
         if (!$this->typeValidator->isValid()) {
             return new JsonResponse([
