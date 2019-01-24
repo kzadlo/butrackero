@@ -71,6 +71,13 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "deploy": [
+            "git pull",
+            "./bin/phpunit",
+            "./bin/console cache:clear",
+            "./bin/console doctrine:schema:update",
+            "./bin/console doctrine:schema:validate"
         ]
     },
     "conflict": {
