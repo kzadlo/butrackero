@@ -2,6 +2,7 @@
 
 namespace App\Balance\Service;
 
+use App\Application\Model\User;
 use App\Application\Service\UserManager;
 use App\Balance\Model\Expense;
 use App\Balance\Hydrator\BalanceHydrator;
@@ -68,6 +69,7 @@ class ExpenseManager
 
     public function getFiltered(array $params): array
     {
+        /** @var User $author */
         $author = $this->getExpenseAuthor();
 
         if (!$author) {
@@ -81,6 +83,7 @@ class ExpenseManager
 
     public function countFiltered(array $params): int
     {
+        /** @var User $author */
         $author = $this->getExpenseAuthor();
 
         if (!$author) {

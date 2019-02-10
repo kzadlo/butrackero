@@ -2,6 +2,7 @@
 
 namespace App\Balance\Service;
 
+use App\Application\Model\User;
 use App\Application\Service\UserManager;
 use App\Balance\Model\Income;
 use App\Balance\Hydrator\BalanceHydrator;
@@ -68,6 +69,7 @@ class IncomeManager
 
     public function getFiltered(array $params): array
     {
+        /** @var User $author */
         $author = $this->getIncomeAuthor();
 
         if (!$author) {
@@ -81,6 +83,7 @@ class IncomeManager
 
     public function countFiltered(array $params): int
     {
+        /** @var User $author */
         $author = $this->getIncomeAuthor();
 
         if (!$author) {
