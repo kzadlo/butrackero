@@ -95,8 +95,13 @@ class ExpenseCategoryRestController extends AbstractController
     /** @Route("api/expense-categories", methods={"POST"}, name="api_expense_categories_add") */
     public function add(Request $request): JsonResponse
     {
-        $categoryData = json_decode($request->getContent(), true);
+        if ($request->getContentType() !== 'json') {
+            return new JsonResponse([
+                'errors' => sprintf('%s is not acceptable content type', $request->getContentType())
+            ], 415);
+        }
 
+        $categoryData = json_decode($request->getContent(), true);
         $this->categoryValidator->validate($categoryData);
 
         if (!$this->categoryValidator->isValid()) {
@@ -156,6 +161,12 @@ class ExpenseCategoryRestController extends AbstractController
     /** @Route("api/expense-categories/{id}", methods={"PATCH"}, name="api_expense_categories_update") */
     public function update(int $id, Request $request): JsonResponse
     {
+        if ($request->getContentType() !== 'json') {
+            return new JsonResponse([
+                'errors' => sprintf('%s is not acceptable content type', $request->getContentType())
+            ], 415);
+        }
+
         $categoryData = json_decode($request->getContent(), true);
 
         $category = $this->entityManager->find(ExpenseCategory::class, $id);

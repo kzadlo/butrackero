@@ -96,8 +96,13 @@ class ExpenseRestController extends AbstractController
     /** @Route("api/expenses", methods={"POST"}, name="api_expenses_add") */
     public function add(Request $request): JsonResponse
     {
-        $expenseData = json_decode($request->getContent(), true);
+        if ($request->getContentType() !== 'json') {
+            return new JsonResponse([
+                'errors' => sprintf('%s is not acceptable content type', $request->getContentType())
+            ], 415);
+        }
 
+        $expenseData = json_decode($request->getContent(), true);
         $this->expenseValidator->validate($expenseData);
 
         if ($this->expenseValidator->isValid()) {
@@ -161,6 +166,12 @@ class ExpenseRestController extends AbstractController
     /** @Route("api/expenses/{id}", methods={"PATCH"}, name="api_expenses_update") */
     public function update(int $id, Request $request): JsonResponse
     {
+        if ($request->getContentType() !== 'json') {
+            return new JsonResponse([
+                'errors' => sprintf('%s is not acceptable content type', $request->getContentType())
+            ], 415);
+        }
+
         $expenseData = json_decode($request->getContent(), true);
 
         $expense = $this->entityManager->find(Expense::class, $id);

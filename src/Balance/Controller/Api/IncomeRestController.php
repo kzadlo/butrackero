@@ -96,8 +96,13 @@ class IncomeRestController extends AbstractController
     /** @Route("api/incomes", methods={"POST"}, name="api_incomes_add") */
     public function add(Request $request): JsonResponse
     {
-        $incomeData = json_decode($request->getContent(), true);
+        if ($request->getContentType() !== 'json') {
+            return new JsonResponse([
+                'errors' => sprintf('%s is not acceptable content type', $request->getContentType())
+            ], 415);
+        }
 
+        $incomeData = json_decode($request->getContent(), true);
         $this->incomeValidator->validate($incomeData);
 
         if ($this->incomeValidator->isValid()) {
@@ -161,6 +166,12 @@ class IncomeRestController extends AbstractController
     /** @Route("api/incomes/{id}", methods={"PATCH"}, name="api_incomes_update") */
     public function update(int $id, Request $request): JsonResponse
     {
+        if ($request->getContentType() !== 'json') {
+            return new JsonResponse([
+                'errors' => sprintf('%s is not acceptable content type', $request->getContentType())
+            ], 415);
+        }
+
         $incomeData = json_decode($request->getContent(), true);
 
         $income = $this->entityManager->find(Income::class, $id);
