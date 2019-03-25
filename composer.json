@@ -30,6 +30,7 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "squizlabs/php_codesniffer": "*",
         "symfony/debug-pack": "*",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.8",
@@ -75,8 +76,9 @@
         ],
         "deploy": [
             "git pull",
-            "./bin/phpunit",
             "./bin/console cache:clear",
+            "./vendor/bin/phpcs",
+            "./bin/phpunit",
             "./bin/console doctrine:schema:update",
             "./bin/console doctrine:schema:validate"
         ]
