@@ -77,7 +77,7 @@
         "deploy": [
             "git pull",
             "./bin/console cache:clear",
-            "./vendor/bin/phpcs",
+            "./vendor/bin/phpcs -n",
             "./bin/phpunit",
             "./bin/console doctrine:schema:update",
             "./bin/console doctrine:schema:validate"
