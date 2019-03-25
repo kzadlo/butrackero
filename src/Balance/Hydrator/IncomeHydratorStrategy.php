@@ -14,7 +14,7 @@ class IncomeHydratorStrategy implements HydrationStrategyInterface
             'id' => $entity->getId(),
             'amount' => $entity->getAmount(),
             'category' => $entity->getType()->getName(),
-            'created_timestamp' => $entity->getCreated()->getTimestamp()
+            'createdTimestamp' => $entity->getCreated()->getTimestamp()
         ];
     }
 

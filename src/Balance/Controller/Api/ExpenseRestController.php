@@ -75,10 +75,10 @@ class ExpenseRestController extends AbstractController
             'expenses' => $expenses,
             '_metadata' => [
                 'page' => $paginator->getPage(),
-                'per_page' => $paginator->getLimit(),
-                'page_count' => count($expenses),
-                'total_count' => $filteredExpensesQuantity,
-                'Links' => [
+                'perPage' => $paginator->getLimit(),
+                'pageCount' => count($expenses),
+                'totalCount' => $filteredExpensesQuantity,
+                'links' => [
                     'self' => $this->generateLink($route, $filters),
                     'first' => $this->generateLink($route, $filters, 1),
                     'previous' => !$paginator->isFirstPage()

@@ -2,6 +2,7 @@
 
 namespace App\Balance\Service;
 
+use App\Application\Model\User;
 use App\Application\Service\UserManager;
 use App\Balance\Hydrator\BalanceHydrator;
 use App\Balance\Hydrator\CategoryHydratorStrategy;
@@ -68,26 +69,30 @@ class CategoryManager
 
     public function getFiltered(array $params): array
     {
+        /** @var User $author */
         $author = $this->getCategoryAuthor();
 
         if (!$author) {
             return [];
         }
 
-        $categories = $this->entityManager->getRepository(ExpenseCategory::class)->findByAuthorAndFilters($author->getId(), $params);
+        $categories = $this->entityManager->getRepository(ExpenseCategory::class)
+            ->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($categories, $this->hydrationStrategy);
     }
 
     public function countFiltered(array $params): int
     {
+        /** @var User $author */
         $author = $this->getCategoryAuthor();
 
         if (!$author) {
             return 0;
         }
 
-        return $this->entityManager->getRepository(ExpenseCategory::class)->findByAuthorAndFilters($author->getId(), $params, true);
+        return $this->entityManager->getRepository(ExpenseCategory::class)
+            ->findByAuthorAndFilters($author->getId(), $params, true);
     }
 
     public function getCategoryAuthor(): ?UserInterface

@@ -76,7 +76,8 @@ class IncomeManager
             return [];
         }
 
-        $incomes = $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters($author->getId(), $params);
+        $incomes = $this->entityManager->getRepository(Income::class)
+            ->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($incomes, $this->hydrationStrategy);
     }
@@ -90,7 +91,8 @@ class IncomeManager
             return 0;
         }
 
-        return $this->entityManager->getRepository(Income::class)->findByAuthorAndFilters($author->getId(), $params, true);
+        return $this->entityManager->getRepository(Income::class)
+            ->findByAuthorAndFilters($author->getId(), $params, true);
     }
 
     public function getIncomeAuthor(): ?UserInterface

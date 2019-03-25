@@ -2,6 +2,7 @@
 
 namespace App\Balance\Service;
 
+use App\Application\Model\User;
 use App\Application\Service\UserManager;
 use App\Balance\Hydrator\BalanceHydrator;
 use App\Balance\Hydrator\TypeHydratorStrategy;
@@ -68,26 +69,30 @@ class TypeManager
 
     public function getFiltered(array $params): array
     {
+        /** @var User $author */
         $author = $this->getTypeAuthor();
 
         if (!$author) {
             return [];
         }
 
-        $types = $this->entityManager->getRepository(IncomeType::class)->findByAuthorAndFilters($author->getId(), $params);
+        $types = $this->entityManager->getRepository(IncomeType::class)
+            ->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($types, $this->hydrationStrategy);
     }
 
     public function countFiltered(array $params): int
     {
+        /** @var User $author */
         $author = $this->getTypeAuthor();
 
         if (!$author) {
             return 0;
         }
 
-        return $this->entityManager->getRepository(IncomeType::class)->findByAuthorAndFilters($author->getId(), $params, true);
+        return $this->entityManager->getRepository(IncomeType::class)
+            ->findByAuthorAndFilters($author->getId(), $params, true);
     }
 
     public function getTypeAuthor(): ?UserInterface

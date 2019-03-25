@@ -76,7 +76,8 @@ class ExpenseManager
             return [];
         }
 
-        $expenses = $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters($author->getId(), $params);
+        $expenses = $this->entityManager->getRepository(Expense::class)
+            ->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($expenses, $this->hydrationStrategy);
     }
@@ -90,7 +91,8 @@ class ExpenseManager
             return 0;
         }
 
-        return $this->entityManager->getRepository(Expense::class)->findByAuthorAndFilters($author->getId(), $params, true);
+        return $this->entityManager->getRepository(Expense::class)
+            ->findByAuthorAndFilters($author->getId(), $params, true);
     }
 
     public function getExpenseAuthor(): ?UserInterface

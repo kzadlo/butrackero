@@ -75,9 +75,9 @@ class IncomeRestController extends AbstractController
             'incomes' => $incomes,
             '_metadata' => [
                 'page' => $paginator->getPage(),
-                'per_page' => $paginator->getLimit(),
-                'page_count' => count($incomes),
-                'total_count' => $filteredIncomesQuantity,
+                'perPage' => $paginator->getLimit(),
+                'pageCount' => count($incomes),
+                'totalCount' => $filteredIncomesQuantity,
                 'Links' => [
                     'self' => $this->generateLink($route, $filters),
                     'first' => $this->generateLink($route, $filters, 1),

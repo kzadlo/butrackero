@@ -17,7 +17,7 @@ class AuthController extends AbstractController
 
         if (!$user) {
             return new JsonResponse([
-                'message' => sprintf('User cannot be created with those username and password')
+                'message' => 'User cannot be created with those username and password'
             ], 401);
         }
 

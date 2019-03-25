@@ -74,10 +74,10 @@ class IncomeTypeRestController extends AbstractController
             'types' => $types,
             '_metadata' => [
                 'page' => $paginator->getPage(),
-                'per_page' => $paginator->getLimit(),
-                'page_count' => count($types),
-                'total_count' => $filteredTypesQuantity,
-                'Links' => [
+                'perPage' => $paginator->getLimit(),
+                'pageCount' => count($types),
+                'totalCount' => $filteredTypesQuantity,
+                'links' => [
                     'self' => $this->generateLink($route, $filters),
                     'first' => $this->generateLink($route, $filters, 1),
                     'previous' => !$paginator->isFirstPage()
