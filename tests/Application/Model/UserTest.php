@@ -80,6 +80,5 @@ class UserTest extends TestCase
     public function canEraseCredentials()
     {
         $this->assertNull($this->user->eraseCredentials());
-
     }
 }
