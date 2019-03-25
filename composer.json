@@ -30,6 +30,7 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "sebastian/phpcpd": "^4.1",
         "squizlabs/php_codesniffer": "*",
         "symfony/debug-pack": "*",
         "symfony/dotenv": "*",
