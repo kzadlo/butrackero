@@ -4,6 +4,7 @@ namespace App\Balance\Model;
 
 use App\Application\Model\User;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -16,8 +17,6 @@ class Income implements BalanceEntityInterface
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
     private $id;
 
@@ -41,6 +40,7 @@ class Income implements BalanceEntityInterface
 
     public function __construct()
     {
+        $this->id = Uuid::uuid4();
         $this->setCreated(new \DateTime());
     }
 

@@ -15,7 +15,7 @@ class UserFactory
         $this->passwordEncoder = $passwordEncoder;
     }
 
-    public function create(string $username, string $plainPassword): ?UserInterface
+    public function create(string $username, string $plainPassword): UserInterface
     {
         $user = new User($username);
         $user->changePassword($this->passwordEncoder->encodePassword($user, $plainPassword));
