@@ -3,8 +3,6 @@
 namespace App\Balance\Controller\Api;
 
 use App\Application\Service\Filter;
-use App\Balance\Model\Expense;
-use App\Balance\Model\ExpenseCategory;
 use App\Balance\Repository\ExpenseCategoryRepository;
 use App\Balance\Repository\ExpenseRepository;
 use App\Balance\Service\ExpenseManager;
@@ -130,7 +128,7 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses/{id}", methods={"GET"}, name="api_expenses_get") */
-    public function getBy(int $id): JsonResponse
+    public function getBy(string $id): JsonResponse
     {
         $expense = $this->expenseRepository->findOneById($id);
 
@@ -148,7 +146,7 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses/{id}", methods={"DELETE"}, name="api_expenses_delete") */
-    public function delete(int $id): JsonResponse
+    public function delete(string $id): JsonResponse
     {
         $expense = $this->expenseRepository->findOneById($id);
 
@@ -168,7 +166,7 @@ class ExpenseRestController extends AbstractController
     }
 
     /** @Route("api/expenses/{id}", methods={"PATCH"}, name="api_expenses_update") */
-    public function update(int $id, Request $request): JsonResponse
+    public function update(string $id, Request $request): JsonResponse
     {
         if ($request->getContentType() !== 'json') {
             return new JsonResponse([

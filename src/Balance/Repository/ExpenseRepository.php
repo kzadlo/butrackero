@@ -5,6 +5,7 @@ namespace App\Balance\Repository;
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Expense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class ExpenseRepository extends ServiceEntityRepository implements RepositoryInterface
@@ -26,7 +27,7 @@ class ExpenseRepository extends ServiceEntityRepository implements RepositoryInt
         $this->_em->flush();
     }
 
-    public function findByAuthorAndFilters(int $authorId, array $filters, bool $count = false)
+    public function findByAuthorAndFilters(UuidInterface $authorId, array $filters, bool $count = false)
     {
         $query = $this->createQueryBuilder('e');
 

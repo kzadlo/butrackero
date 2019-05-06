@@ -4,10 +4,10 @@ namespace App\Balance\Controller\Api;
 
 use App\Application\Service\Filter;
 use App\Application\Service\PaginatorInterface;
-use App\Balance\Model\IncomeType;
 use App\Balance\Repository\IncomeTypeRepository;
 use App\Balance\Service\TypeManager;
 use App\Balance\Validator\TypeValidator;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,9 +119,9 @@ class IncomeTypeRestController extends AbstractController
     }
 
     /** @Route("api/income-types/{id}", methods={"GET"}, name="api_income_types_get") */
-    public function getBy(int $id): JsonResponse
+    public function getBy(string $id): JsonResponse
     {
-        $type = $this->incomeTypeRepository->findOneById($id);
+        $type = $this->incomeTypeRepository->findOneById(Uuid::fromString($id));
 
         $this->typeValidator->validateTypeExists($type);
 
@@ -137,9 +137,9 @@ class IncomeTypeRestController extends AbstractController
     }
 
     /** @Route("api/income-types/{id}", methods={"DELETE"}, name="api_income_types_delete") */
-    public function delete(int $id): JsonResponse
+    public function delete(string $id): JsonResponse
     {
-        $type = $this->incomeTypeRepository->findOneById($id);
+        $type = $this->incomeTypeRepository->findOneById(Uuid::fromString($id));
 
         $this->typeValidator->validateTypeExists($type);
         $this->typeValidator->validateTypeHasIncomes($type);
@@ -158,7 +158,7 @@ class IncomeTypeRestController extends AbstractController
     }
 
     /** @Route("api/income-types/{id}", methods={"PATCH"}, name="api_income_types_update") */
-    public function update(int $id, Request $request): JsonResponse
+    public function update(string $id, Request $request): JsonResponse
     {
         if ($request->getContentType() !== 'json') {
             return new JsonResponse([
@@ -168,7 +168,7 @@ class IncomeTypeRestController extends AbstractController
 
         $typeData = json_decode($request->getContent(), true);
 
-        $type = $this->incomeTypeRepository->findOneById($id);
+        $type = $this->incomeTypeRepository->findOneById(Uuid::fromString($id));
         $this->typeValidator->validateTypeExists($type);
 
         if ($this->typeValidator->hasArrayKey('name', $typeData)) {

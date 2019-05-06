@@ -4,6 +4,7 @@ namespace App\Balance\Model;
 
 use App\Application\Model\User;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -43,7 +44,7 @@ class Expense implements BalanceEntityInterface
         $this->setCreated(new \DateTime());
     }
 
-    public function getId(): int
+    public function getId(): UuidInterface
     {
         return $this->id;
     }

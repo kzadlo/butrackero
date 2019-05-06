@@ -60,14 +60,8 @@ class ExpenseValidator extends AbstractBalanceValidator
             return false;
         }
 
-        if (!$this->isInt($expense['category'])) {
+        if (!$this->isString($expense['category'])) {
             $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_IS_NOT_INT);
-
-            return false;
-        }
-
-        if (!$this->isGreaterThanZero($expense['category'])) {
-            $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_IS_LESS_OR_EQUAL_ZERO);
 
             return false;
         }

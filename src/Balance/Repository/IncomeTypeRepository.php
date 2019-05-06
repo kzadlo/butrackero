@@ -5,6 +5,7 @@ namespace App\Balance\Repository;
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\IncomeType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class IncomeTypeRepository extends ServiceEntityRepository implements RepositoryInterface
@@ -26,7 +27,7 @@ class IncomeTypeRepository extends ServiceEntityRepository implements Repository
         $this->_em->flush();
     }
 
-    public function findByAuthorAndFilters(int $authorId, array $filters, bool $count = false)
+    public function findByAuthorAndFilters(UuidInterface $authorId, array $filters, bool $count = false)
     {
         $query = $this->createQueryBuilder('t');
 

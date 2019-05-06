@@ -60,14 +60,8 @@ class IncomeValidator extends AbstractBalanceValidator
             return false;
         }
 
-        if (!$this->isInt($income['type'])) {
+        if (!$this->isString($income['type'])) {
             $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_IS_NOT_INT);
-
-            return false;
-        }
-
-        if (!$this->isGreaterThanZero($income['type'])) {
-            $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_IS_LESS_OR_EQUAL_ZERO);
 
             return false;
         }

@@ -3,8 +3,6 @@
 namespace App\Balance\Controller\Api;
 
 use App\Application\Service\Filter;
-use App\Balance\Model\Income;
-use App\Balance\Model\IncomeType;
 use App\Balance\Repository\IncomeRepository;
 use App\Balance\Repository\IncomeTypeRepository;
 use App\Balance\Service\IncomeManager;
@@ -130,7 +128,7 @@ class IncomeRestController extends AbstractController
     }
 
     /** @Route("api/incomes/{id}", methods={"GET"}, name="api_incomes_get") */
-    public function getBy(int $id): JsonResponse
+    public function getBy(string $id): JsonResponse
     {
         $income = $this->incomeRepository->findOneById($id);
 
@@ -148,7 +146,7 @@ class IncomeRestController extends AbstractController
     }
 
     /** @Route("api/incomes/{id}", methods={"DELETE"}, name="api_incomes_delete") */
-    public function delete(int $id): JsonResponse
+    public function delete(string $id): JsonResponse
     {
         $income = $this->incomeRepository->findOneById($id);
 
@@ -168,7 +166,7 @@ class IncomeRestController extends AbstractController
     }
 
     /** @Route("api/incomes/{id}", methods={"PATCH"}, name="api_incomes_update") */
-    public function update(int $id, Request $request): JsonResponse
+    public function update(string $id, Request $request): JsonResponse
     {
         if ($request->getContentType() !== 'json') {
             return new JsonResponse([

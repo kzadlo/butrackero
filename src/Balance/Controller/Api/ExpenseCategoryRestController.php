@@ -4,10 +4,10 @@ namespace App\Balance\Controller\Api;
 
 use App\Application\Service\Filter;
 use App\Application\Service\PaginatorInterface;
-use App\Balance\Model\ExpenseCategory;
 use App\Balance\Repository\ExpenseCategoryRepository;
 use App\Balance\Service\CategoryManager;
 use App\Balance\Validator\CategoryValidator;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,9 +119,9 @@ class ExpenseCategoryRestController extends AbstractController
     }
 
     /** @Route("api/expense-categories/{id}", methods={"GET"}, name="api_expense_categories_get") */
-    public function getBy(int $id): JsonResponse
+    public function getBy(string $id): JsonResponse
     {
-        $category = $this->expenseCategoryRepository->findOneById($id);
+        $category = $this->expenseCategoryRepository->findOneById(Uuid::fromString($id));
 
         $this->categoryValidator->validateCategoryExists($category);
 
@@ -137,9 +137,9 @@ class ExpenseCategoryRestController extends AbstractController
     }
 
     /** @Route("api/expense-categories/{id}", methods={"DELETE"}, name="api_expense_categories_delete") */
-    public function delete(int $id): JsonResponse
+    public function delete(string $id): JsonResponse
     {
-        $category = $this->expenseCategoryRepository->findOneById($id);
+        $category = $this->expenseCategoryRepository->findOneById(Uuid::fromString($id));
 
         $this->categoryValidator->validateCategoryExists($category);
         $this->categoryValidator->validateCategoryHasExpenses($category);
@@ -158,7 +158,7 @@ class ExpenseCategoryRestController extends AbstractController
     }
 
     /** @Route("api/expense-categories/{id}", methods={"PATCH"}, name="api_expense_categories_update") */
-    public function update(int $id, Request $request): JsonResponse
+    public function update(string $id, Request $request): JsonResponse
     {
         if ($request->getContentType() !== 'json') {
             return new JsonResponse([
@@ -168,7 +168,7 @@ class ExpenseCategoryRestController extends AbstractController
 
         $categoryData = json_decode($request->getContent(), true);
 
-        $category = $this->expenseCategoryRepository->findOneById($id);
+        $category = $this->expenseCategoryRepository->findOneById(Uuid::fromString($id));
         $this->categoryValidator->validateCategoryExists($category);
 
         if ($this->categoryValidator->hasArrayKey('name', $categoryData)) {
