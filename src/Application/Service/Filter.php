@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Filter;
+namespace App\Application\Service;
 
 class Filter
 {

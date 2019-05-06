@@ -2,7 +2,7 @@
 
 namespace App\Balance\Controller\Api;
 
-use App\Application\Filter\Filter;
+use App\Application\Service\Filter;
 use App\Application\Service\PaginatorInterface;
 use App\Balance\Controller\Api\Traits\LinkCreatorTrait;
 use App\Balance\Model\ExpenseCategory;
