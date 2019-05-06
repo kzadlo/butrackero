@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Balance\Controller\Api\Traits;
+namespace App\Balance\Controller\Api;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 

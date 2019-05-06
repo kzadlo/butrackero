@@ -3,13 +3,11 @@
 namespace App\Balance\Controller\Api;
 
 use App\Application\Service\Filter;
-use App\Balance\Controller\Api\Traits\LinkCreatorTrait;
 use App\Balance\Model\Expense;
 use App\Balance\Model\ExpenseCategory;
 use App\Balance\Service\ExpenseManager;
 use App\Balance\Validator\ExpenseValidator;
 use App\Application\Service\PaginatorInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,18 +17,14 @@ class ExpenseRestController extends AbstractController
 {
     use LinkCreatorTrait;
 
-    private $entityManager;
-
     private $expenseManager;
 
     private $expenseValidator;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
         ExpenseManager $expenseManager,
         ExpenseValidator $validator
     ) {
-        $this->entityManager = $entityManager;
         $this->expenseManager = $expenseManager;
         $this->expenseValidator = $validator;
     }
