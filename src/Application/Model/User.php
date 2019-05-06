@@ -48,7 +48,7 @@ class User implements UserInterface
         return $this->username;
     }
 
-    public function setUsername(string $username): UserInterface
+    public function changeUsername(string $username): UserInterface
     {
         $this->username = $username;
         return $this;
@@ -59,9 +59,9 @@ class User implements UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $hashedPassword): UserInterface
+    public function changePassword(string $encodedPassword): UserInterface
     {
-        $this->password = $hashedPassword;
+        $this->password = $encodedPassword;
         return $this;
     }
 

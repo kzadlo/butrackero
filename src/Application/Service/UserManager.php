@@ -2,53 +2,40 @@
 
 namespace App\Application\Service;
 
-use App\Application\Model\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Application\Factory\UserFactory;
+use App\Application\Repository\UserRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserManager
 {
-    private $entityManager;
+    private $userFactory;
 
-    private $passwordEncoder;
+    private $userRepository;
 
     private $tokenStorage;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserFactory $userFactory,
+        UserRepository $userRepository,
         TokenStorageInterface $tokenStorage
     ) {
-        $this->entityManager = $entityManager;
-        $this->passwordEncoder = $passwordEncoder;
+        $this->userFactory = $userFactory;
+        $this->userRepository = $userRepository;
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function create(?string $username, ?string $password): ?UserInterface
+    public function add(?string $username, ?string $plainPassword): bool
     {
-        if ($this->arePostCredentialsEmpty($username, $password)) {
-            return null;
+        if (!$this->canCreate($username, $plainPassword)) {
+            return false;
         }
 
-        $user = new User($username);
-        $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
+        $user = $this->userFactory->create($username, $plainPassword);
+        $this->userRepository->save($user);
 
-        return $user;
-    }
-
-    public function save(UserInterface $user): void
-    {
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-    }
-
-    public function delete(UserInterface $user): void
-    {
-        $this->entityManager->remove($user);
-        $this->entityManager->flush();
+        return true;
     }
 
     public function getCurrentUser(): ?UserInterface
@@ -62,8 +49,8 @@ class UserManager
         return $token->getUser();
     }
 
-    private function arePostCredentialsEmpty(?string $username, ?string $password): bool
+    private function canCreate(?string $username, ?string $password): bool
     {
-        return (empty($username) || empty($password));
+        return !(empty($username) || empty($password));
     }
 }

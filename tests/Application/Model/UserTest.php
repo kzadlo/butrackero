@@ -33,14 +33,14 @@ class UserTest extends TestCase
 
     public function testCanGetUsername()
     {
-        $this->user->setUsername('Other');
+        $this->user->changeUsername('Other');
 
         $this->assertSame('Other', $this->user->getUsername());
     }
 
     public function testCanGetPassword()
     {
-        $this->user->setPassword('TestPass123');
+        $this->user->changePassword('TestPass123');
 
         $this->assertSame('TestPass123', $this->user->getPassword());
     }
