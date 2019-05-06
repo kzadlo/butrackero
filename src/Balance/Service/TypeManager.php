@@ -7,7 +7,7 @@ use App\Application\Service\UserManager;
 use App\Balance\Hydrator\BalanceHydrator;
 use App\Balance\Hydrator\TypeHydratorStrategy;
 use App\Balance\Model\IncomeType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Balance\Repository\IncomeTypeRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class TypeManager
@@ -16,19 +16,19 @@ class TypeManager
 
     private $hydrationStrategy;
 
-    private $entityManager;
+    private $typeRepository;
 
     private $userManager;
 
     public function __construct(
         BalanceHydrator $hydrator,
         TypeHydratorStrategy $strategy,
-        EntityManagerInterface $entityManager,
+        IncomeTypeRepository $typeRepository,
         UserManager $userManager
     ) {
         $this->hydrator = $hydrator;
         $this->hydrationStrategy = $strategy;
-        $this->entityManager = $entityManager;
+        $this->typeRepository = $typeRepository;
         $this->userManager = $userManager;
     }
 
@@ -42,18 +42,6 @@ class TypeManager
         return $this->hydrator->hydrate($typeValues, $this->hydrationStrategy);
     }
 
-    public function save(IncomeType $type): void
-    {
-        $this->entityManager->persist($type);
-        $this->entityManager->flush();
-    }
-
-    public function delete(IncomeType $type): void
-    {
-        $this->entityManager->remove($type);
-        $this->entityManager->flush();
-    }
-
     public function update(IncomeType $type, array $updateValues): void
     {
         if (isset($updateValues['name'])) {
@@ -64,7 +52,7 @@ class TypeManager
             $type->setDescription($updateValues['description']);
         }
 
-        $this->save($type);
+        $this->typeRepository->save($type);
     }
 
     public function getFiltered(array $params): array
@@ -76,8 +64,7 @@ class TypeManager
             return [];
         }
 
-        $types = $this->entityManager->getRepository(IncomeType::class)
-            ->findByAuthorAndFilters($author->getId(), $params);
+        $types = $this->typeRepository->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($types, $this->hydrationStrategy);
     }
@@ -91,8 +78,7 @@ class TypeManager
             return 0;
         }
 
-        return $this->entityManager->getRepository(IncomeType::class)
-            ->findByAuthorAndFilters($author->getId(), $params, true);
+        return $this->typeRepository->findByAuthorAndFilters($author->getId(), $params, true);
     }
 
     public function getTypeAuthor(): ?UserInterface

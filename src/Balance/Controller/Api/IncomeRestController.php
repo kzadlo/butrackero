@@ -5,10 +5,11 @@ namespace App\Balance\Controller\Api;
 use App\Application\Service\Filter;
 use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
+use App\Balance\Repository\IncomeRepository;
+use App\Balance\Repository\IncomeTypeRepository;
 use App\Balance\Service\IncomeManager;
 use App\Balance\Validator\IncomeValidator;
 use App\Application\Service\PaginatorInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,20 +19,24 @@ class IncomeRestController extends AbstractController
 {
     use LinkCreatorTrait;
 
-    private $entityManager;
-
     private $incomeManager;
 
     private $incomeValidator;
 
+    private $incomeRepository;
+
+    private $incomeTypeRepository;
+
     public function __construct(
-        EntityManagerInterface $entityManager,
         IncomeManager $incomeManager,
-        IncomeValidator $incomeValidator
+        IncomeValidator $incomeValidator,
+        IncomeRepository $incomeRepository,
+        IncomeTypeRepository $incomeTypeRepository
     ) {
-        $this->entityManager = $entityManager;
         $this->incomeManager = $incomeManager;
         $this->incomeValidator = $incomeValidator;
+        $this->incomeRepository = $incomeRepository;
+        $this->incomeTypeRepository = $incomeTypeRepository;
     }
 
     /** @Route("api/incomes", methods={"GET"}, name="api_incomes_get_all") */
@@ -105,7 +110,7 @@ class IncomeRestController extends AbstractController
         $this->incomeValidator->validate($incomeData);
 
         if ($this->incomeValidator->isValid()) {
-            $incomeData['type'] = $this->entityManager->find(IncomeType::class, $incomeData['type']);
+            $incomeData['type'] = $this->incomeTypeRepository->findOneById($incomeData['type']);
             $this->incomeValidator->validateTypeExists($incomeData['type']);
         }
 
@@ -117,7 +122,7 @@ class IncomeRestController extends AbstractController
 
         $incomeData['author'] = $this->incomeManager->getIncomeAuthor();
 
-        $this->incomeManager->save($this->incomeManager->createFromArray($incomeData));
+        $this->incomeRepository->save($this->incomeManager->createFromArray($incomeData));
 
         return new JsonResponse([
             'message' => 'The income has been added successfully!'
@@ -127,7 +132,7 @@ class IncomeRestController extends AbstractController
     /** @Route("api/incomes/{id}", methods={"GET"}, name="api_incomes_get") */
     public function getBy(int $id): JsonResponse
     {
-        $income = $this->entityManager->find(Income::class, $id);
+        $income = $this->incomeRepository->findOneById($id);
 
         $this->incomeValidator->validateIncomeExists($income);
 
@@ -145,7 +150,7 @@ class IncomeRestController extends AbstractController
     /** @Route("api/incomes/{id}", methods={"DELETE"}, name="api_incomes_delete") */
     public function delete(int $id): JsonResponse
     {
-        $income = $this->entityManager->find(Income::class, $id);
+        $income = $this->incomeRepository->findOneById($id);
 
         $this->incomeValidator->validateIncomeExists($income);
 
@@ -155,7 +160,7 @@ class IncomeRestController extends AbstractController
             ], 400);
         }
 
-        $this->incomeManager->delete($income);
+        $this->incomeRepository->delete($income);
 
         return new JsonResponse([
             'message' => 'The income has been deleted successfully!'
@@ -173,7 +178,7 @@ class IncomeRestController extends AbstractController
 
         $incomeData = json_decode($request->getContent(), true);
 
-        $income = $this->entityManager->find(Income::class, $id);
+        $income = $this->incomeRepository->findOneById($id);
         $this->incomeValidator->validateIncomeExists($income);
 
         if ($this->incomeValidator->hasArrayKey('amount', $incomeData)) {
@@ -182,7 +187,7 @@ class IncomeRestController extends AbstractController
 
         if ($this->incomeValidator->hasArrayKey('type', $incomeData)) {
             if ($this->incomeValidator->validateType($incomeData)) {
-                $incomeData['type'] = $this->entityManager->find(IncomeType::class, $incomeData['type']);
+                $incomeData['type'] = $this->incomeTypeRepository->findOneById($incomeData['type']);
                 $this->incomeValidator->validateTypeExists($incomeData['type']);
             }
         }

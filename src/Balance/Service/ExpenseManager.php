@@ -7,7 +7,7 @@ use App\Application\Service\UserManager;
 use App\Balance\Model\Expense;
 use App\Balance\Hydrator\BalanceHydrator;
 use App\Balance\Hydrator\ExpenseHydratorStrategy;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Balance\Repository\ExpenseRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class ExpenseManager
@@ -16,19 +16,19 @@ class ExpenseManager
 
     private $hydrationStrategy;
 
-    private $entityManager;
+    private $expenseRepository;
 
     private $userManager;
 
     public function __construct(
         BalanceHydrator $hydrator,
         ExpenseHydratorStrategy $strategy,
-        EntityManagerInterface $entityManager,
+        ExpenseRepository $expenseRepository,
         UserManager $userManager
     ) {
         $this->hydrator = $hydrator;
         $this->hydrationStrategy = $strategy;
-        $this->entityManager = $entityManager;
+        $this->expenseRepository = $expenseRepository;
         $this->userManager = $userManager;
     }
 
@@ -42,18 +42,6 @@ class ExpenseManager
         return $this->hydrator->hydrate($expenseValues, $this->hydrationStrategy);
     }
 
-    public function save(Expense $expense): void
-    {
-        $this->entityManager->persist($expense);
-        $this->entityManager->flush();
-    }
-
-    public function delete(Expense $expense): void
-    {
-        $this->entityManager->remove($expense);
-        $this->entityManager->flush();
-    }
-
     public function update(Expense $expense, array $updateValues): void
     {
         if (isset($updateValues['amount'])) {
@@ -64,7 +52,7 @@ class ExpenseManager
             $expense->setCategory($updateValues['category']);
         }
 
-        $this->save($expense);
+        $this->expenseRepository->save($expense);
     }
 
     public function getFiltered(array $params): array
@@ -76,8 +64,7 @@ class ExpenseManager
             return [];
         }
 
-        $expenses = $this->entityManager->getRepository(Expense::class)
-            ->findByAuthorAndFilters($author->getId(), $params);
+        $expenses = $this->expenseRepository->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($expenses, $this->hydrationStrategy);
     }
@@ -91,8 +78,7 @@ class ExpenseManager
             return 0;
         }
 
-        return $this->entityManager->getRepository(Expense::class)
-            ->findByAuthorAndFilters($author->getId(), $params, true);
+        return $this->expenseRepository->findByAuthorAndFilters($author->getId(), $params, true);
     }
 
     public function getExpenseAuthor(): ?UserInterface

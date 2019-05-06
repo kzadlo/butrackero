@@ -5,6 +5,8 @@ namespace App\Balance\Controller\Api;
 use App\Application\Service\Filter;
 use App\Balance\Model\Expense;
 use App\Balance\Model\ExpenseCategory;
+use App\Balance\Repository\ExpenseCategoryRepository;
+use App\Balance\Repository\ExpenseRepository;
 use App\Balance\Service\ExpenseManager;
 use App\Balance\Validator\ExpenseValidator;
 use App\Application\Service\PaginatorInterface;
@@ -21,12 +23,20 @@ class ExpenseRestController extends AbstractController
 
     private $expenseValidator;
 
+    private $expenseRepository;
+
+    private $expenseCategoryRepository;
+
     public function __construct(
         ExpenseManager $expenseManager,
-        ExpenseValidator $validator
+        ExpenseValidator $validator,
+        ExpenseRepository $expenseRepository,
+        ExpenseCategoryRepository $expenseCategoryRepository
     ) {
         $this->expenseManager = $expenseManager;
         $this->expenseValidator = $validator;
+        $this->expenseRepository = $expenseRepository;
+        $this->expenseCategoryRepository = $expenseCategoryRepository;
     }
 
     /** @Route("api/expenses", methods={"GET"}, name="api_expenses_get_all") */
@@ -100,7 +110,7 @@ class ExpenseRestController extends AbstractController
         $this->expenseValidator->validate($expenseData);
 
         if ($this->expenseValidator->isValid()) {
-            $expenseData['category'] = $this->entityManager->find(ExpenseCategory::class, $expenseData['category']);
+            $expenseData['category'] = $this->expenseCategoryRepository->findOneById($expenseData['category']);
             $this->expenseValidator->validateCategoryExists($expenseData['category']);
         }
 
@@ -112,7 +122,7 @@ class ExpenseRestController extends AbstractController
 
         $expenseData['author'] = $this->expenseManager->getExpenseAuthor();
 
-        $this->expenseManager->save($this->expenseManager->createFromArray($expenseData));
+        $this->expenseRepository->save($this->expenseManager->createFromArray($expenseData));
 
         return new JsonResponse([
             'message' => 'The expense has been added successfully!'
@@ -122,7 +132,7 @@ class ExpenseRestController extends AbstractController
     /** @Route("api/expenses/{id}", methods={"GET"}, name="api_expenses_get") */
     public function getBy(int $id): JsonResponse
     {
-        $expense = $this->entityManager->find(Expense::class, $id);
+        $expense = $this->expenseRepository->findOneById($id);
 
         $this->expenseValidator->validateExpenseExists($expense);
 
@@ -140,7 +150,7 @@ class ExpenseRestController extends AbstractController
     /** @Route("api/expenses/{id}", methods={"DELETE"}, name="api_expenses_delete") */
     public function delete(int $id): JsonResponse
     {
-        $expense = $this->entityManager->find(Expense::class, $id);
+        $expense = $this->expenseRepository->findOneById($id);
 
         $this->expenseValidator->validateExpenseExists($expense);
 
@@ -150,7 +160,7 @@ class ExpenseRestController extends AbstractController
             ], 400);
         }
 
-        $this->expenseManager->delete($expense);
+        $this->expenseRepository->delete($expense);
 
         return new JsonResponse([
             'message' => 'The expense has been deleted successfully!'
@@ -168,7 +178,7 @@ class ExpenseRestController extends AbstractController
 
         $expenseData = json_decode($request->getContent(), true);
 
-        $expense = $this->entityManager->find(Expense::class, $id);
+        $expense = $this->expenseRepository->findOneById($id);
         $this->expenseValidator->validateExpenseExists($expense);
 
         if ($this->expenseValidator->hasArrayKey('amount', $expenseData)) {
@@ -177,7 +187,7 @@ class ExpenseRestController extends AbstractController
 
         if ($this->expenseValidator->hasArrayKey('category', $expenseData)) {
             if ($this->expenseValidator->validateCategory($expenseData)) {
-                $expenseData['category'] = $this->entityManager->find(ExpenseCategory::class, $expenseData['category']);
+                $expenseData['category'] = $this->expenseCategoryRepository->findOneById($expenseData['category']);
                 $this->expenseValidator->validateCategoryExists($expenseData['category']);
             }
         }

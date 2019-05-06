@@ -5,9 +5,9 @@ namespace App\Balance\Controller\Api;
 use App\Application\Service\Filter;
 use App\Application\Service\PaginatorInterface;
 use App\Balance\Model\ExpenseCategory;
+use App\Balance\Repository\ExpenseCategoryRepository;
 use App\Balance\Service\CategoryManager;
 use App\Balance\Validator\CategoryValidator;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,20 +17,20 @@ class ExpenseCategoryRestController extends AbstractController
 {
     use LinkCreatorTrait;
 
-    private $entityManager;
-
     private $categoryManager;
 
     private $categoryValidator;
 
+    private $expenseCategoryRepository;
+
     public function __construct(
-        EntityManagerInterface $entityManager,
         CategoryManager $categoryManager,
-        CategoryValidator $validator
+        CategoryValidator $validator,
+        ExpenseCategoryRepository $expenseCategoryRepository
     ) {
-        $this->entityManager = $entityManager;
         $this->categoryManager = $categoryManager;
         $this->categoryValidator = $validator;
+        $this->expenseCategoryRepository = $expenseCategoryRepository;
     }
 
     /** @Route("api/expense-categories", methods={"GET"}, name="api_expense_categories_get_all") */
@@ -111,7 +111,7 @@ class ExpenseCategoryRestController extends AbstractController
 
         $categoryData['author'] = $this->categoryManager->getCategoryAuthor();
 
-        $this->categoryManager->save($this->categoryManager->createFromArray($categoryData));
+        $this->expenseCategoryRepository->save($this->categoryManager->createFromArray($categoryData));
 
         return new JsonResponse([
             'message' => 'The category has been added successfully!'
@@ -121,7 +121,7 @@ class ExpenseCategoryRestController extends AbstractController
     /** @Route("api/expense-categories/{id}", methods={"GET"}, name="api_expense_categories_get") */
     public function getBy(int $id): JsonResponse
     {
-        $category = $this->entityManager->find(ExpenseCategory::class, $id);
+        $category = $this->expenseCategoryRepository->findOneById($id);
 
         $this->categoryValidator->validateCategoryExists($category);
 
@@ -139,7 +139,7 @@ class ExpenseCategoryRestController extends AbstractController
     /** @Route("api/expense-categories/{id}", methods={"DELETE"}, name="api_expense_categories_delete") */
     public function delete(int $id): JsonResponse
     {
-        $category = $this->entityManager->find(ExpenseCategory::class, $id);
+        $category = $this->expenseCategoryRepository->findOneById($id);
 
         $this->categoryValidator->validateCategoryExists($category);
         $this->categoryValidator->validateCategoryHasExpenses($category);
@@ -150,7 +150,7 @@ class ExpenseCategoryRestController extends AbstractController
             ], 400);
         }
 
-        $this->categoryManager->delete($category);
+        $this->expenseCategoryRepository->delete($category);
 
         return new JsonResponse([
             'message' => 'The category has been deleted successfully!'
@@ -168,7 +168,7 @@ class ExpenseCategoryRestController extends AbstractController
 
         $categoryData = json_decode($request->getContent(), true);
 
-        $category = $this->entityManager->find(ExpenseCategory::class, $id);
+        $category = $this->expenseCategoryRepository->findOneById($id);
         $this->categoryValidator->validateCategoryExists($category);
 
         if ($this->categoryValidator->hasArrayKey('name', $categoryData)) {

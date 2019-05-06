@@ -2,15 +2,28 @@
 
 namespace App\Balance\Repository;
 
+use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\ExpenseCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ExpenseCategoryRepository extends ServiceEntityRepository
+class ExpenseCategoryRepository extends ServiceEntityRepository implements RepositoryInterface
 {
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, ExpenseCategory::class);
+    }
+
+    public function save(BalanceEntityInterface $entity): void
+    {
+        $this->_em->persist($entity);
+        $this->_em->flush();
+    }
+
+    public function delete(BalanceEntityInterface $entity): void
+    {
+        $this->_em->remove($entity);
+        $this->_em->flush();
     }
 
     public function findByAuthorAndFilters(int $authorId, array $filters, bool $count = false)

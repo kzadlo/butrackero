@@ -7,7 +7,7 @@ use App\Application\Service\UserManager;
 use App\Balance\Hydrator\BalanceHydrator;
 use App\Balance\Hydrator\CategoryHydratorStrategy;
 use App\Balance\Model\ExpenseCategory;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Balance\Repository\ExpenseCategoryRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class CategoryManager
@@ -16,19 +16,19 @@ class CategoryManager
 
     private $hydrationStrategy;
 
-    private $entityManager;
+    private $categoryRepository;
 
     private $userManager;
 
     public function __construct(
         BalanceHydrator $hydrator,
         CategoryHydratorStrategy $strategy,
-        EntityManagerInterface $entityManager,
+        ExpenseCategoryRepository $categoryRepository,
         UserManager $userManager
     ) {
         $this->hydrator = $hydrator;
         $this->hydrationStrategy = $strategy;
-        $this->entityManager = $entityManager;
+        $this->categoryRepository = $categoryRepository;
         $this->userManager = $userManager;
     }
 
@@ -42,18 +42,6 @@ class CategoryManager
         return $this->hydrator->hydrate($categoryValues, $this->hydrationStrategy);
     }
 
-    public function save(ExpenseCategory $category): void
-    {
-        $this->entityManager->persist($category);
-        $this->entityManager->flush();
-    }
-
-    public function delete(ExpenseCategory $category): void
-    {
-        $this->entityManager->remove($category);
-        $this->entityManager->flush();
-    }
-
     public function update(ExpenseCategory $category, array $updateValues): void
     {
         if (isset($updateValues['name'])) {
@@ -64,7 +52,7 @@ class CategoryManager
             $category->setDescription($updateValues['description']);
         }
 
-        $this->save($category);
+        $this->categoryRepository->save($category);
     }
 
     public function getFiltered(array $params): array
@@ -76,8 +64,7 @@ class CategoryManager
             return [];
         }
 
-        $categories = $this->entityManager->getRepository(ExpenseCategory::class)
-            ->findByAuthorAndFilters($author->getId(), $params);
+        $categories = $this->categoryRepository->findByAuthorAndFilters($author->getId(), $params);
 
         return $this->hydrator->extractSeveral($categories, $this->hydrationStrategy);
     }
@@ -91,8 +78,7 @@ class CategoryManager
             return 0;
         }
 
-        return $this->entityManager->getRepository(ExpenseCategory::class)
-            ->findByAuthorAndFilters($author->getId(), $params, true);
+        return $this->categoryRepository->findByAuthorAndFilters($author->getId(), $params, true);
     }
 
     public function getCategoryAuthor(): ?UserInterface

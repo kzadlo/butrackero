@@ -5,9 +5,9 @@ namespace App\Balance\Controller\Api;
 use App\Application\Service\Filter;
 use App\Application\Service\PaginatorInterface;
 use App\Balance\Model\IncomeType;
+use App\Balance\Repository\IncomeTypeRepository;
 use App\Balance\Service\TypeManager;
 use App\Balance\Validator\TypeValidator;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,20 +17,20 @@ class IncomeTypeRestController extends AbstractController
 {
     use LinkCreatorTrait;
 
-    private $entityManager;
-
     private $typeManager;
 
     private $typeValidator;
 
+    private $incomeTypeRepository;
+
     public function __construct(
-        EntityManagerInterface $entityManager,
         TypeManager $typeManager,
-        TypeValidator $validator
+        TypeValidator $validator,
+        IncomeTypeRepository $incomeTypeRepository
     ) {
-        $this->entityManager = $entityManager;
         $this->typeManager = $typeManager;
         $this->typeValidator = $validator;
+        $this->incomeTypeRepository = $incomeTypeRepository;
     }
 
     /** @Route("api/income-types", methods={"GET"}, name="api_income_types_get_all") */
@@ -111,7 +111,7 @@ class IncomeTypeRestController extends AbstractController
 
         $typeData['author'] = $this->typeManager->getTypeAuthor();
 
-        $this->typeManager->save($this->typeManager->createFromArray($typeData));
+        $this->incomeTypeRepository->save($this->typeManager->createFromArray($typeData));
 
         return new JsonResponse([
             'message' => 'The type has been added successfully!'
@@ -121,7 +121,7 @@ class IncomeTypeRestController extends AbstractController
     /** @Route("api/income-types/{id}", methods={"GET"}, name="api_income_types_get") */
     public function getBy(int $id): JsonResponse
     {
-        $type = $this->entityManager->find(IncomeType::class, $id);
+        $type = $this->incomeTypeRepository->findOneById($id);
 
         $this->typeValidator->validateTypeExists($type);
 
@@ -139,7 +139,7 @@ class IncomeTypeRestController extends AbstractController
     /** @Route("api/income-types/{id}", methods={"DELETE"}, name="api_income_types_delete") */
     public function delete(int $id): JsonResponse
     {
-        $type = $this->entityManager->find(IncomeType::class, $id);
+        $type = $this->incomeTypeRepository->findOneById($id);
 
         $this->typeValidator->validateTypeExists($type);
         $this->typeValidator->validateTypeHasIncomes($type);
@@ -150,7 +150,7 @@ class IncomeTypeRestController extends AbstractController
             ], 400);
         }
 
-        $this->typeManager->delete($type);
+        $this->incomeTypeRepository->delete($type);
 
         return new JsonResponse([
             'message' => 'The type has been deleted successfully!'
@@ -168,7 +168,7 @@ class IncomeTypeRestController extends AbstractController
 
         $typeData = json_decode($request->getContent(), true);
 
-        $type = $this->entityManager->find(IncomeType::class, $id);
+        $type = $this->incomeTypeRepository->findOneById($id);
         $this->typeValidator->validateTypeExists($type);
 
         if ($this->typeValidator->hasArrayKey('name', $typeData)) {
