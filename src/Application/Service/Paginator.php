@@ -40,13 +40,6 @@ class Paginator implements PaginatorInterface
         return $this->limit;
     }
 
-    private function calculateOffset(): int
-    {
-        $this->offset = ($this->page !== 1) ? (($this->page - 1) * $this->limit) : 0;
-
-        return $this->offset;
-    }
-
     public function getOffset(): int
     {
         return $this->calculateOffset();
@@ -80,5 +73,12 @@ class Paginator implements PaginatorInterface
     public function isPageOutOfRange(int $page, int $lastPage): bool
     {
         return ($page < 1) || ($page > $lastPage && $lastPage > 0);
+    }
+
+    private function calculateOffset(): int
+    {
+        $this->offset = ($this->page !== 1) ? (($this->page - 1) * $this->limit) : 0;
+
+        return $this->offset;
     }
 }
