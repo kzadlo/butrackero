@@ -45,11 +45,11 @@ class CategoryManager
     public function update(ExpenseCategory $category, array $updateValues): void
     {
         if (isset($updateValues['name'])) {
-            $category->setName($updateValues['name']);
+            $category->changeName($updateValues['name']);
         }
 
         if (isset($updateValues['description'])) {
-            $category->setDescription($updateValues['description']);
+            $category->changeDescription($updateValues['description']);
         }
 
         $this->categoryRepository->save($category);

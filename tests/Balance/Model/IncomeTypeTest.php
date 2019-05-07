@@ -15,9 +15,13 @@ class IncomeTypeTest extends TestCase
     /** @var IncomeType $incomeType */
     private $incomeType;
 
+    /** @var UserInterface $author */
+    private $author;
+
     public function setUp()
     {
-        $this->incomeType = new IncomeType();
+        $this->author = new User('Tester');
+        $this->incomeType = new IncomeType('TestName', $this->author);
     }
 
     public function testClassImplementsBalanceEntityInterface()
@@ -32,25 +36,28 @@ class IncomeTypeTest extends TestCase
 
     public function testToStringMethodGetsName()
     {
-        $this->incomeType->setName('TypeName');
-
         ob_start();
         echo $this->incomeType;
         $toString = ob_get_clean();
 
-        $this->assertSame('TypeName', $toString);
+        $this->assertSame('TestName', $toString);
+    }
+
+    public function testCanChangeName()
+    {
+        $this->incomeType->changeName('SecondTestName');
+
+        $this->assertSame('SecondTestName', $this->incomeType->getName());
     }
 
     public function testCanGetName()
     {
-        $this->incomeType->setName('TypeName');
-
-        $this->assertSame('TypeName', $this->incomeType->getName());
+        $this->assertSame('TestName', $this->incomeType->getName());
     }
 
     public function testCanGetDescription()
     {
-        $this->incomeType->setDescription('This is description');
+        $this->incomeType->changeDescription('This is description');
 
         $this->assertSame('This is description', $this->incomeType->getDescription());
     }
@@ -58,79 +65,62 @@ class IncomeTypeTest extends TestCase
     public function testCanCheckThatHasDescription()
     {
         $this->assertFalse($this->incomeType->hasDescription());
+        $this->incomeType->changeDescription('This is description');
 
-        $this->incomeType->setDescription('This is description');
         $this->assertTrue($this->incomeType->hasDescription());
     }
 
     public function testCanGetIncomes()
     {
-        $this->incomeType->addIncome($incomeOne = new Income());
+        $income = new Income(50.50, $this->incomeType, $this->author);
 
-        $this->assertContains($incomeOne, $this->incomeType->getIncomes());
+        $this->assertContains($income, $this->incomeType->getIncomes());
     }
 
     public function testCanAddSeveralIncomes()
     {
-        $this->incomeType->addIncome($incomeOne = new Income());
-        $this->incomeType->addIncome(new Income());
-        $this->incomeType->addIncome(new Income());
+        new Income(50.50, $this->incomeType, $this->author);
+        new Income(30.30, $this->incomeType, $this->author);
 
-        $this->assertContains($incomeOne, $this->incomeType->getIncomes());
-        $this->assertCount(3, $this->incomeType->getIncomes());
+        $this->assertCount(2, $this->incomeType->getIncomes());
     }
 
     public function testCannotAddSameIncome()
     {
-        $incomeOne = new Income();
-        $this->incomeType->addIncome($incomeOne);
-        $this->incomeType->addIncome($incomeOne);
+        $income = new Income(50.50, $this->incomeType, $this->author);
+        $this->incomeType->addIncome($income);
+        $this->incomeType->addIncome($income);
 
         $this->assertCount(1, $this->incomeType->getIncomes());
     }
 
     public function testCanRemoveIncome()
     {
-        $this->incomeType->addIncome($incomeOne = new Income());
-        $this->incomeType->addIncome(new Income());
+        $income = new Income(50.50, $this->incomeType, $this->author);
 
-        $this->assertContains($incomeOne, $this->incomeType->getIncomes());
+        $this->assertContains($income, $this->incomeType->getIncomes());
 
-        $this->incomeType->removeIncome($incomeOne);
-        $this->assertNotContains($incomeOne, $this->incomeType->getIncomes());
-    }
+        $this->incomeType->removeIncome($income);
 
-    public function testCannotRemoveIncomeIfNotExist()
-    {
-        $this->assertCount(0, $this->incomeType->getIncomes());
-
-        $this->incomeType->removeIncome(new Income());
-        $this->assertCount(0, $this->incomeType->getIncomes());
+        $this->assertNotContains($income, $this->incomeType->getIncomes());
     }
 
     public function testCanCheckThatHasConcreteIncome()
     {
-        $incomeOne = new Income();
+        $income = new Income(50.50, $this->incomeType, $this->author);
 
-        $this->assertFalse($this->incomeType->hasIncome($incomeOne));
-
-        $this->incomeType->addIncome($incomeOne);
-        $this->assertTrue($this->incomeType->hasIncome($incomeOne));
+        $this->assertTrue($this->incomeType->hasIncome($income));
     }
 
     public function testCanCheckThatHasIncomes()
     {
-        $this->assertFalse($this->incomeType->hasIncomes());
+        new Income(50.50, $this->incomeType, $this->author);
 
-        $this->incomeType->addIncome(new Income());
         $this->assertTrue($this->incomeType->hasIncomes());
     }
 
     public function testCanGetAuthor()
     {
-        $this->assertNull($this->incomeType->getAuthor());
-
-        $this->incomeType->setAuthor(new User('Tester'));
         $this->assertInstanceOf(UserInterface::class, $this->incomeType->getAuthor());
     }
 }

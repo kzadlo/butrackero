@@ -20,9 +20,6 @@ class ExpenseHydratorStrategy implements HydrationStrategyInterface
 
     public function hydrate(array $data): BalanceEntityInterface
     {
-        return (new Expense())
-            ->setAmount($data['amount'])
-            ->setCategory($data['category'])
-            ->setAuthor($data['author']);
+        return new Expense($data['amount'], $data['category'], $data['author']);
     }
 }

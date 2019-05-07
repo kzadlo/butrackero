@@ -2,7 +2,6 @@
 
 namespace App\Balance\Model;
 
-use App\Application\Model\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -37,9 +36,13 @@ class ExpenseCategory implements BalanceEntityInterface
      */
     private $author;
 
-    public function __construct()
-    {
+    public function __construct(
+        string $name,
+        UserInterface $author
+    ) {
         $this->id = Uuid::uuid4();
+        $this->changeName($name);
+        $this->author = $author;
         $this->expenses = new ArrayCollection();
     }
 
@@ -58,7 +61,7 @@ class ExpenseCategory implements BalanceEntityInterface
         return $this->name;
     }
 
-    public function setName(string $name): ExpenseCategory
+    public function changeName(string $name): ExpenseCategory
     {
         $this->name = $name;
         return $this;
@@ -69,7 +72,7 @@ class ExpenseCategory implements BalanceEntityInterface
         return $this->description;
     }
 
-    public function setDescription(string $description): ExpenseCategory
+    public function changeDescription(string $description): ExpenseCategory
     {
         $this->description = $description;
         return $this;
@@ -116,11 +119,5 @@ class ExpenseCategory implements BalanceEntityInterface
     public function getAuthor(): ?UserInterface
     {
         return $this->author;
-    }
-
-    public function setAuthor(User $author): ExpenseCategory
-    {
-        $this->author = $author;
-        return $this;
     }
 }

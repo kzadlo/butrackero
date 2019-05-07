@@ -2,7 +2,6 @@
 
 namespace App\Balance\Model;
 
-use App\Application\Model\User;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -38,10 +37,16 @@ class Income implements BalanceEntityInterface
      */
     private $author;
 
-    public function __construct()
-    {
+    public function __construct(
+        float $amount,
+        IncomeType $type,
+        UserInterface $author
+    ) {
         $this->id = Uuid::uuid4();
-        $this->setCreated(new \DateTime());
+        $this->changeAmount($amount);
+        $this->changeType($type);
+        $this->author = $author;
+        $this->created = new \DateTime();
     }
 
     public function getId(): UuidInterface
@@ -54,7 +59,7 @@ class Income implements BalanceEntityInterface
         return $this->amount;
     }
 
-    public function setAmount(float $amount): Income
+    public function changeAmount(float $amount): Income
     {
         $this->amount = $amount;
         return $this;
@@ -65,7 +70,7 @@ class Income implements BalanceEntityInterface
         return $this->type;
     }
 
-    public function setType(IncomeType $type): Income
+    public function changeType(IncomeType $type): Income
     {
         $this->type = $type;
         $type->addIncome($this);
@@ -77,20 +82,8 @@ class Income implements BalanceEntityInterface
         return $this->created;
     }
 
-    public function setCreated(\DateTimeInterface $created): Income
-    {
-        $this->created = $created;
-        return $this;
-    }
-
     public function getAuthor(): ?UserInterface
     {
         return $this->author;
-    }
-
-    public function setAuthor(User $author): Income
-    {
-        $this->author = $author;
-        return $this;
     }
 }

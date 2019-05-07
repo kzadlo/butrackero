@@ -45,11 +45,11 @@ class ExpenseManager
     public function update(Expense $expense, array $updateValues): void
     {
         if (isset($updateValues['amount'])) {
-            $expense->setAmount($updateValues['amount']);
+            $expense->changeAmount($updateValues['amount']);
         }
 
         if (isset($updateValues['category'])) {
-            $expense->setCategory($updateValues['category']);
+            $expense->changeCategory($updateValues['category']);
         }
 
         $this->expenseRepository->save($expense);

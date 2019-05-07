@@ -15,9 +15,14 @@ class ExpenseCategoryTest extends TestCase
     /** @var ExpenseCategory $expenseCategory */
     private $expenseCategory;
 
+    /** @var UserInterface $author */
+    private $author;
+
     public function setUp()
     {
-        $this->expenseCategory = new ExpenseCategory();
+        $this->author = new User('Tester');
+
+        $this->expenseCategory = new ExpenseCategory('TestName', $this->author);
     }
 
     public function testClassImplementsBalanceEntityInterface()
@@ -32,25 +37,28 @@ class ExpenseCategoryTest extends TestCase
 
     public function testToStringMethodGetsName()
     {
-        $this->expenseCategory->setName('CategoryName');
-
         ob_start();
         echo $this->expenseCategory;
         $toString = ob_get_clean();
 
-        $this->assertSame('CategoryName', $toString);
+        $this->assertSame('TestName', $toString);
+    }
+
+    public function testCanChangeName()
+    {
+        $this->expenseCategory->changeName('SecondTestName');
+
+        $this->assertSame('SecondTestName', $this->expenseCategory->getName());
     }
 
     public function testCanGetName()
     {
-        $this->expenseCategory->setName('CategoryName');
-
-        $this->assertSame('CategoryName', $this->expenseCategory->getName());
+        $this->assertSame('TestName', $this->expenseCategory->getName());
     }
 
     public function testCanGetDescription()
     {
-        $this->expenseCategory->setDescription('This is description');
+        $this->expenseCategory->changeDescription('This is description');
 
         $this->assertSame('This is description', $this->expenseCategory->getDescription());
     }
@@ -59,78 +67,74 @@ class ExpenseCategoryTest extends TestCase
     {
         $this->assertFalse($this->expenseCategory->hasDescription());
 
-        $this->expenseCategory->setDescription('This is description');
+        $this->expenseCategory->changeDescription('This is description');
         $this->assertTrue($this->expenseCategory->hasDescription());
     }
 
     public function testCanGetExpenses()
     {
-        $this->expenseCategory->addExpense($expenseOne = new Expense());
+        $expense = new Expense(
+            50.50,
+            $this->expenseCategory,
+            $this->author
+        );
 
-        $this->assertContains($expenseOne, $this->expenseCategory->getExpenses());
+        $this->assertContains($expense, $this->expenseCategory->getExpenses());
     }
 
     public function testCanAddSeveralExpenses()
     {
-        $this->expenseCategory->addExpense($expenseOne = new Expense());
-        $this->expenseCategory->addExpense(new Expense());
-        $this->expenseCategory->addExpense(new Expense());
+        new Expense(
+            50.50,
+            $this->expenseCategory,
+            $this->author
+        );
 
-        $this->assertContains($expenseOne, $this->expenseCategory->getExpenses());
-        $this->assertCount(3, $this->expenseCategory->getExpenses());
+        new Expense(
+            30.30,
+            $this->expenseCategory,
+            $this->author
+        );
+
+        $this->assertCount(2, $this->expenseCategory->getExpenses());
     }
 
     public function testCannotAddSameExpense()
     {
-        $expenseOne = new Expense();
-        $this->expenseCategory->addExpense($expenseOne);
-        $this->expenseCategory->addExpense($expenseOne);
+        $expense = new Expense(50.50, $this->expenseCategory, $this->author);
+        $this->expenseCategory->addExpense($expense);
+        $this->expenseCategory->addExpense($expense);
 
         $this->assertCount(1, $this->expenseCategory->getExpenses());
     }
 
     public function testCanRemoveExpense()
     {
-        $this->expenseCategory->addExpense($expenseOne = new Expense());
-        $this->expenseCategory->addExpense(new Expense());
+        $expense = new Expense(50.50, $this->expenseCategory, $this->author);
 
-        $this->assertContains($expenseOne, $this->expenseCategory->getExpenses());
+        $this->assertContains($expense, $this->expenseCategory->getExpenses());
 
-        $this->expenseCategory->removeExpense($expenseOne);
-        $this->assertNotContains($expenseOne, $this->expenseCategory->getExpenses());
-    }
+        $this->expenseCategory->removeExpense($expense);
 
-    public function testCannotRemoveExpenseIfNotExist()
-    {
-        $this->assertCount(0, $this->expenseCategory->getExpenses());
-
-        $this->expenseCategory->removeExpense(new Expense());
-        $this->assertCount(0, $this->expenseCategory->getExpenses());
+        $this->assertNotContains($expense, $this->expenseCategory->getExpenses());
     }
 
     public function testCanCheckThatHasConcreteExpense()
     {
-        $expenseOne = new Expense();
+        $expense = new Expense(50.50, $this->expenseCategory, $this->author);
 
-        $this->assertFalse($this->expenseCategory->hasExpense($expenseOne));
-
-        $this->expenseCategory->addExpense($expenseOne);
-        $this->assertTrue($this->expenseCategory->hasExpense($expenseOne));
+        $this->assertTrue($this->expenseCategory->hasExpense($expense));
     }
 
     public function testCanCheckThatHasExpenses()
     {
-        $this->assertFalse($this->expenseCategory->hasExpenses());
+        new Expense(50.50, $this->expenseCategory, $this->author);
 
-        $this->expenseCategory->addExpense(new Expense());
         $this->assertTrue($this->expenseCategory->hasExpenses());
     }
 
     public function testCanGetAuthor()
     {
-        $this->assertNull($this->expenseCategory->getAuthor());
-
-        $this->expenseCategory->setAuthor(new User('Tester'));
         $this->assertInstanceOf(UserInterface::class, $this->expenseCategory->getAuthor());
     }
 }

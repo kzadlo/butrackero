@@ -14,9 +14,18 @@ class IncomeTest extends TestCase
     /** @var Income $income */
     private $income;
 
+    /** @var UserInterface $author */
+    private $author;
+
     public function setUp()
     {
-        $this->income = new Income();
+        $this->author = new User('Tester');
+
+        $this->income = new Income(
+            100.10,
+            new IncomeType('TestName', $this->author),
+            $this->author
+        );
     }
 
     public function testClassImplementsBalanceEntityInterface()
@@ -35,41 +44,30 @@ class IncomeTest extends TestCase
 
     public function testCanGetAmount()
     {
-        $this->income->setAmount(50);
-
-        $this->assertSame(50.00, $this->income->getAmount());
+        $this->assertSame(100.10, $this->income->getAmount());
     }
 
     public function testCanGetType()
     {
-        $type = new IncomeType();
-        $this->income->setType($type);
-
-        $this->assertSame($type, $this->income->getType());
+        $this->assertInstanceOf(IncomeType::class, $this->income->getType());
     }
 
     public function testCanSetOnlyOneType()
     {
-        $firstType = new IncomeType();
-        $secondType = new IncomeType();
-        $this->income->setType($firstType);
-        $this->income->setType($secondType);
+        $type = new IncomeType('SecondTestName', new User('Tester'));
+        $this->income->changeType($type);
 
-        $this->assertSame($secondType, $this->income->getType());
+
+        $this->assertSame($type, $this->income->getType());
     }
 
     public function testCanGetCreated()
     {
-        $this->income->setCreated(new \DateTime('2018-11-20'));
-
-        $this->assertEquals(new \DateTime('2018-11-20'), $this->income->getCreated());
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->income->getCreated());
     }
 
     public function testCanGetAuthor()
     {
-        $this->assertNull($this->income->getAuthor());
-
-        $this->income->setAuthor(new User('Tester'));
         $this->assertInstanceOf(UserInterface::class, $this->income->getAuthor());
     }
 }

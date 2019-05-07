@@ -19,9 +19,7 @@ class TypeHydratorStrategy implements HydrationStrategyInterface
 
     public function hydrate(array $data): BalanceEntityInterface
     {
-        return (new IncomeType())
-            ->setName($data['name'])
-            ->setDescription($data['description'])
-            ->setAuthor($data['author']);
+        return (new IncomeType($data['name'], $data['author']))
+            ->changeDescription($data['description']);
     }
 }

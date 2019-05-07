@@ -14,9 +14,18 @@ class ExpenseTest extends TestCase
     /** @var Expense $expense */
     private $expense;
 
+    /** @var UserInterface $author */
+    private $author;
+
     public function setUp()
     {
-        $this->expense = new Expense();
+        $this->author = new User('Tester');
+
+        $this->expense = new Expense(
+            100.10,
+            new ExpenseCategory('TestName', $this->author),
+            $this->author
+        );
     }
 
     public function testClassImplementsBalanceEntityInterface()
@@ -35,41 +44,29 @@ class ExpenseTest extends TestCase
 
     public function testCanGetAmount()
     {
-        $this->expense->setAmount(50);
-
-        $this->assertSame(50.00, $this->expense->getAmount());
+        $this->assertSame(100.10, $this->expense->getAmount());
     }
 
     public function testCanGetCategory()
     {
-        $category = new ExpenseCategory();
-        $this->expense->setCategory($category);
-
-        $this->assertSame($category, $this->expense->getCategory());
+        $this->assertInstanceOf(ExpenseCategory::class, $this->expense->getCategory());
     }
 
     public function testCanSetOnlyOneCategory()
     {
-        $firstCategory = new ExpenseCategory();
-        $secondCategory = new ExpenseCategory();
-        $this->expense->setCategory($firstCategory);
-        $this->expense->setCategory($secondCategory);
+        $category = new ExpenseCategory('SecondTestName', new User('Tester'));
+        $this->expense->changeCategory($category);
 
-        $this->assertSame($secondCategory, $this->expense->getCategory());
+        $this->assertSame($category, $this->expense->getCategory());
     }
 
     public function testCanGetCreated()
     {
-        $this->expense->setCreated(new \DateTime('2018-11-20'));
-
-        $this->assertEquals(new \DateTime('2018-11-20'), $this->expense->getCreated());
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->expense->getCreated());
     }
 
     public function testCanGetAuthor()
     {
-        $this->assertNull($this->expense->getAuthor());
-
-        $this->expense->setAuthor(new User('Tester'));
         $this->assertInstanceOf(UserInterface::class, $this->expense->getAuthor());
     }
 }

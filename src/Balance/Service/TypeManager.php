@@ -45,11 +45,11 @@ class TypeManager
     public function update(IncomeType $type, array $updateValues): void
     {
         if (isset($updateValues['name'])) {
-            $type->setName($updateValues['name']);
+            $type->changeName($updateValues['name']);
         }
 
         if (isset($updateValues['description'])) {
-            $type->setDescription($updateValues['description']);
+            $type->changeDescription($updateValues['description']);
         }
 
         $this->typeRepository->save($type);

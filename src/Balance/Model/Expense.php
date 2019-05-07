@@ -2,7 +2,6 @@
 
 namespace App\Balance\Model;
 
-use App\Application\Model\User;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -34,14 +33,20 @@ class Expense implements BalanceEntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Application\Model\User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
      */
     private $author;
 
-    public function __construct()
-    {
+    public function __construct(
+        float $amount,
+        ExpenseCategory $category,
+        UserInterface $author
+    ) {
         $this->id = Uuid::uuid4();
-        $this->setCreated(new \DateTime());
+        $this->changeAmount($amount);
+        $this->changeCategory($category);
+        $this->author = $author;
+        $this->created = new \DateTime();
     }
 
     public function getId(): UuidInterface
@@ -54,7 +59,7 @@ class Expense implements BalanceEntityInterface
         return $this->amount;
     }
 
-    public function setAmount(float $amount): Expense
+    public function changeAmount(float $amount): Expense
     {
         $this->amount = $amount;
         return $this;
@@ -65,7 +70,7 @@ class Expense implements BalanceEntityInterface
         return $this->category;
     }
 
-    public function setCategory(ExpenseCategory $category): Expense
+    public function changeCategory(ExpenseCategory $category): Expense
     {
         $this->category = $category;
         $category->addExpense($this);
@@ -77,20 +82,8 @@ class Expense implements BalanceEntityInterface
         return $this->created;
     }
 
-    public function setCreated(\DateTimeInterface $created): Expense
-    {
-        $this->created = $created;
-        return $this;
-    }
-
     public function getAuthor(): ?UserInterface
     {
         return $this->author;
-    }
-
-    public function setAuthor(User $author): Expense
-    {
-        $this->author = $author;
-        return $this;
     }
 }

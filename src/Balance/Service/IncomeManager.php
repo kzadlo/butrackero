@@ -45,11 +45,11 @@ class IncomeManager
     public function update(Income $income, array $updateValues): void
     {
         if (isset($updateValues['amount'])) {
-            $income->setAmount($updateValues['amount']);
+            $income->changeAmount($updateValues['amount']);
         }
 
         if (isset($updateValues['type'])) {
-            $income->setType($updateValues['type']);
+            $income->changeType($updateValues['type']);
         }
 
         $this->incomeRepository->save($income);

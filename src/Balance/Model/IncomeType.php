@@ -37,9 +37,13 @@ class IncomeType implements BalanceEntityInterface
      */
     private $author;
 
-    public function __construct()
-    {
+    public function __construct(
+        string $name,
+        UserInterface $author
+    ) {
         $this->id = Uuid::uuid4();
+        $this->changeName($name);
+        $this->author = $author;
         $this->incomes = new ArrayCollection();
     }
 
@@ -58,7 +62,7 @@ class IncomeType implements BalanceEntityInterface
         return $this->name;
     }
 
-    public function setName(string $name): IncomeType
+    public function changeName(string $name): IncomeType
     {
         $this->name = $name;
         return $this;
@@ -69,7 +73,7 @@ class IncomeType implements BalanceEntityInterface
         return $this->description;
     }
 
-    public function setDescription(string $description): IncomeType
+    public function changeDescription(string $description): IncomeType
     {
         $this->description = $description;
         return $this;
@@ -116,11 +120,5 @@ class IncomeType implements BalanceEntityInterface
     public function getAuthor(): ?UserInterface
     {
         return $this->author;
-    }
-
-    public function setAuthor(User $author): IncomeType
-    {
-        $this->author = $author;
-        return $this;
     }
 }
