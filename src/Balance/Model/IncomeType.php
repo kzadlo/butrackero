@@ -2,9 +2,6 @@
 
 namespace App\Balance\Model;
 
-use App\Application\Model\User;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -28,9 +25,6 @@ class IncomeType implements BalanceEntityInterface
     /** @ORM\Column(type="string", length=255, nullable=true) */
     private $description;
 
-    /** @ORM\OneToMany(targetEntity="Income", mappedBy="type", cascade={"persist"}) */
-    private $incomes;
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Application\Model\User")
      * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=true)
@@ -44,7 +38,6 @@ class IncomeType implements BalanceEntityInterface
         $this->id = Uuid::uuid4();
         $this->changeName($name);
         $this->author = $author;
-        $this->incomes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -82,39 +75,6 @@ class IncomeType implements BalanceEntityInterface
     public function hasDescription(): bool
     {
         return (bool) $this->getDescription();
-    }
-
-    public function getIncomes(): Collection
-    {
-        return $this->incomes;
-    }
-
-    public function addIncome(Income $income): IncomeType
-    {
-        if (!$this->hasIncome($income)) {
-            $this->incomes->add($income);
-        }
-
-        return $this;
-    }
-
-    public function removeIncome(Income $income): IncomeType
-    {
-        if ($this->hasIncome($income)) {
-            $this->incomes->removeElement($income);
-        }
-
-        return $this;
-    }
-
-    public function hasIncome(Income $income): bool
-    {
-        return $this->incomes->contains($income);
-    }
-
-    public function hasIncomes(): bool
-    {
-        return !$this->incomes->isEmpty();
     }
 
     public function getAuthor(): ?UserInterface

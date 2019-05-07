@@ -7,6 +7,7 @@ use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class IncomeTest extends TestCase
@@ -33,13 +34,18 @@ class IncomeTest extends TestCase
         $this->assertInstanceOf(BalanceEntityInterface::class, $this->income);
     }
 
-    public function testCreatedDateSetsInConstructorIsCurrent()
+    public function testContractSetsInConstructor()
     {
+        $this->assertInstanceOf(UuidInterface::class, $this->income->getId());
+        $this->assertSame(100.10, $this->income->getAmount());
+        $this->assertInstanceOf(UserInterface::class, $this->income->getAuthor());
+        $this->assertInstanceOf(IncomeType::class, $this->income->getType());
         $this->assertInstanceOf(\DateTimeInterface::class, $this->income->getCreated());
-        $this->assertSame(
-            (new \DateTime())->format('Y-m-d H:i:s'),
-            $this->income->getCreated()->format('Y-m-d H:i:s')
-        );
+    }
+
+    public function testCanGetId()
+    {
+        $this->assertInstanceOf(UuidInterface::class, $this->income->getId());
     }
 
     public function testCanGetAmount()
@@ -47,16 +53,30 @@ class IncomeTest extends TestCase
         $this->assertSame(100.10, $this->income->getAmount());
     }
 
+    public function testCanChangeAmount()
+    {
+        $this->income->changeAmount(50.50);
+
+        $this->assertSame(50.50, $this->income->getAmount());
+    }
+
     public function testCanGetType()
     {
         $this->assertInstanceOf(IncomeType::class, $this->income->getType());
+    }
+
+    public function testCanChangeType()
+    {
+        $type = new IncomeType('TestChangedName', $this->author);
+        $this->income->changeType($type);
+
+        $this->assertSame($type, $this->income->getType());
     }
 
     public function testCanSetOnlyOneType()
     {
         $type = new IncomeType('SecondTestName', new User('Tester'));
         $this->income->changeType($type);
-
 
         $this->assertSame($type, $this->income->getType());
     }

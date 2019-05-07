@@ -13,7 +13,8 @@ class UserTest extends TestCase
 
     public function setUp()
     {
-        $this->user = new User('Tester');
+        $this->user = (new User('Tester'))
+            ->changePassword('TesterPassword');
     }
 
     public function testClassImplementsUserInterface()
@@ -33,12 +34,22 @@ class UserTest extends TestCase
 
     public function testCanGetUsername()
     {
+        $this->assertSame('Tester', $this->user->getUsername());
+    }
+
+    public function testCanChangeUsername()
+    {
         $this->user->changeUsername('Other');
 
         $this->assertSame('Other', $this->user->getUsername());
     }
 
     public function testCanGetPassword()
+    {
+        $this->assertSame('TesterPassword', $this->user->getPassword());
+    }
+
+    public function testCanChangePassword()
     {
         $this->user->changePassword('TestPass123');
 
@@ -69,6 +80,7 @@ class UserTest extends TestCase
         $this->assertTrue($this->user->isActive());
 
         $this->user->deactivate();
+
         $this->assertFalse($this->user->isActive());
     }
 

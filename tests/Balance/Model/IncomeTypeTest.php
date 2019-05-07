@@ -4,10 +4,9 @@ namespace App\Tests\Balance\Model;
 
 use App\Application\Model\User;
 use App\Balance\Model\BalanceEntityInterface;
-use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
-use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class IncomeTypeTest extends TestCase
@@ -29,9 +28,11 @@ class IncomeTypeTest extends TestCase
         $this->assertInstanceOf(BalanceEntityInterface::class, $this->incomeType);
     }
 
-    public function testIncomesSetInConstructorAreCollection()
+    public function testContractSetsInConstructor()
     {
-        $this->assertInstanceOf(Collection::class, $this->incomeType->getIncomes());
+        $this->assertInstanceOf(UuidInterface::class, $this->incomeType->getId());
+        $this->assertSame('TestName', $this->incomeType->getName());
+        $this->assertInstanceOf(UserInterface::class, $this->incomeType->getAuthor());
     }
 
     public function testToStringMethodGetsName()
@@ -43,11 +44,9 @@ class IncomeTypeTest extends TestCase
         $this->assertSame('TestName', $toString);
     }
 
-    public function testCanChangeName()
+    public function testCanGetId()
     {
-        $this->incomeType->changeName('SecondTestName');
-
-        $this->assertSame('SecondTestName', $this->incomeType->getName());
+        $this->assertInstanceOf(UuidInterface::class, $this->incomeType->getId());
     }
 
     public function testCanGetName()
@@ -55,7 +54,14 @@ class IncomeTypeTest extends TestCase
         $this->assertSame('TestName', $this->incomeType->getName());
     }
 
-    public function testCanGetDescription()
+    public function testCanChangeName()
+    {
+        $this->incomeType->changeName('SecondTestName');
+
+        $this->assertSame('SecondTestName', $this->incomeType->getName());
+    }
+
+    public function testCanChangeDescription()
     {
         $this->incomeType->changeDescription('This is description');
 
@@ -65,58 +71,10 @@ class IncomeTypeTest extends TestCase
     public function testCanCheckThatHasDescription()
     {
         $this->assertFalse($this->incomeType->hasDescription());
+
         $this->incomeType->changeDescription('This is description');
 
         $this->assertTrue($this->incomeType->hasDescription());
-    }
-
-    public function testCanGetIncomes()
-    {
-        $income = new Income(50.50, $this->incomeType, $this->author);
-
-        $this->assertContains($income, $this->incomeType->getIncomes());
-    }
-
-    public function testCanAddSeveralIncomes()
-    {
-        new Income(50.50, $this->incomeType, $this->author);
-        new Income(30.30, $this->incomeType, $this->author);
-
-        $this->assertCount(2, $this->incomeType->getIncomes());
-    }
-
-    public function testCannotAddSameIncome()
-    {
-        $income = new Income(50.50, $this->incomeType, $this->author);
-        $this->incomeType->addIncome($income);
-        $this->incomeType->addIncome($income);
-
-        $this->assertCount(1, $this->incomeType->getIncomes());
-    }
-
-    public function testCanRemoveIncome()
-    {
-        $income = new Income(50.50, $this->incomeType, $this->author);
-
-        $this->assertContains($income, $this->incomeType->getIncomes());
-
-        $this->incomeType->removeIncome($income);
-
-        $this->assertNotContains($income, $this->incomeType->getIncomes());
-    }
-
-    public function testCanCheckThatHasConcreteIncome()
-    {
-        $income = new Income(50.50, $this->incomeType, $this->author);
-
-        $this->assertTrue($this->incomeType->hasIncome($income));
-    }
-
-    public function testCanCheckThatHasIncomes()
-    {
-        new Income(50.50, $this->incomeType, $this->author);
-
-        $this->assertTrue($this->incomeType->hasIncomes());
     }
 
     public function testCanGetAuthor()

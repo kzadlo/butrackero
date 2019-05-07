@@ -23,7 +23,7 @@ class Income implements BalanceEntityInterface
     private $amount;
 
     /**
-     * @ORM\ManyToOne(targetEntity="IncomeType", inversedBy="incomes")
+     * @ORM\ManyToOne(targetEntity="IncomeType")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="id")
      */
     private $type;
@@ -33,7 +33,7 @@ class Income implements BalanceEntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Application\Model\User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
      */
     private $author;
 
@@ -73,7 +73,6 @@ class Income implements BalanceEntityInterface
     public function changeType(IncomeType $type): Income
     {
         $this->type = $type;
-        $type->addIncome($this);
         return $this;
     }
 

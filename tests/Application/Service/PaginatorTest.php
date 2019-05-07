@@ -47,19 +47,23 @@ class PaginatorTest extends TestCase
     public function testCanGetOffset()
     {
         $offsetWhenFirstPage = 0;
+
         $this->assertSame($offsetWhenFirstPage, $this->paginator->getOffset());
 
         $offsetWhenSecondPage = 25;
         $this->paginator->setPage(2);
+
         $this->assertSame($offsetWhenSecondPage, $this->paginator->getOffset());
     }
 
     public function testCalculateLastPage()
     {
         $allItems = 50;
+
         $this->assertSame(2, $this->paginator->calculateLastPage($allItems));
 
         $allItems = 51;
+
         $this->assertSame(3, $this->paginator->calculateLastPage($allItems));
     }
 
@@ -67,7 +71,8 @@ class PaginatorTest extends TestCase
     {
         $this->assertTrue($this->paginator->isFirstPage());
 
-        $this->paginator->setPage(2);
+        $this->paginator->setPage(2)
+        ;
         $this->assertFalse($this->paginator->isFirstPage());
     }
 
@@ -76,18 +81,21 @@ class PaginatorTest extends TestCase
         $this->assertFalse($this->paginator->isLastPage(2));
 
         $this->paginator->setPage(2);
+
         $this->assertTrue($this->paginator->isLastPage(2));
     }
 
     public function testCanGetNextPage()
     {
         $this->paginator->setPage(10);
+
         $this->assertSame(11, $this->paginator->nextPage());
     }
 
     public function testCanGetPreviousPage()
     {
         $this->paginator->setPage(10);
+
         $this->assertSame(9, $this->paginator->previousPage());
     }
 

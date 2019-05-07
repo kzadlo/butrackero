@@ -2,8 +2,6 @@
 
 namespace App\Balance\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -27,12 +25,9 @@ class ExpenseCategory implements BalanceEntityInterface
     /** @ORM\Column(type="string", length=255, nullable=true) */
     private $description;
 
-    /** @ORM\OneToMany(targetEntity="Expense", mappedBy="category", cascade={"persist"}) */
-    private $expenses;
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Application\Model\User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
      */
     private $author;
 
@@ -43,7 +38,6 @@ class ExpenseCategory implements BalanceEntityInterface
         $this->id = Uuid::uuid4();
         $this->changeName($name);
         $this->author = $author;
-        $this->expenses = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -81,39 +75,6 @@ class ExpenseCategory implements BalanceEntityInterface
     public function hasDescription(): bool
     {
         return (bool) $this->getDescription();
-    }
-
-    public function getExpenses(): Collection
-    {
-        return $this->expenses;
-    }
-
-    public function addExpense(Expense $expense): ExpenseCategory
-    {
-        if (!$this->hasExpense($expense)) {
-            $this->expenses->add($expense);
-        }
-
-        return $this;
-    }
-
-    public function removeExpense(Expense $expense): ExpenseCategory
-    {
-        if ($this->hasExpense($expense)) {
-            $this->expenses->removeElement($expense);
-        }
-
-        return $this;
-    }
-
-    public function hasExpense(Expense $expense): bool
-    {
-        return $this->expenses->contains($expense);
-    }
-
-    public function hasExpenses(): bool
-    {
-        return !$this->expenses->isEmpty();
     }
 
     public function getAuthor(): ?UserInterface
