@@ -142,7 +142,6 @@ class ExpenseCategoryRestController extends AbstractController
         $category = $this->expenseCategoryRepository->findOneById(Uuid::fromString($id));
 
         $this->categoryValidator->validateCategoryExists($category);
-        $this->categoryValidator->validateCategoryHasExpenses($category);
 
         if (!$this->categoryValidator->isValid()) {
             return new JsonResponse([

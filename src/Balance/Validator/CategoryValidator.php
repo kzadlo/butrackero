@@ -62,13 +62,4 @@ class CategoryValidator extends AbstractBalanceValidator
             $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_OBJECT_NOT_EXISTS);
         }
     }
-
-    public function validateCategoryHasExpenses(?ExpenseCategory $category): void
-    {
-        if ($this->isObjectExists($category)) {
-            if (!$this->isArrayEmpty($category->getExpenses()->toArray())) {
-                $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_OBJECT_HAS_RELATION);
-            }
-        }
-    }
 }

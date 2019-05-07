@@ -142,7 +142,6 @@ class IncomeTypeRestController extends AbstractController
         $type = $this->incomeTypeRepository->findOneById(Uuid::fromString($id));
 
         $this->typeValidator->validateTypeExists($type);
-        $this->typeValidator->validateTypeHasIncomes($type);
 
         if (!$this->typeValidator->isValid()) {
             return new JsonResponse([
