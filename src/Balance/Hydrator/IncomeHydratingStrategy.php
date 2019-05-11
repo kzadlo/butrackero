@@ -5,7 +5,7 @@ namespace App\Balance\Hydrator;
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Income;
 
-final class IncomeHydratorStrategy implements HydrationStrategyInterface
+final class IncomeHydratingStrategy implements HydratingStrategyInterface
 {
     /** @var Income $entity */
     public function extract(BalanceEntityInterface $entity): array

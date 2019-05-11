@@ -5,7 +5,7 @@ namespace App\Balance\Service;
 use App\Application\Model\User;
 use App\Application\Service\UserManager;
 use App\Balance\Hydrator\BalanceHydrator;
-use App\Balance\Hydrator\TypeHydratorStrategy;
+use App\Balance\Hydrator\TypeHydratingStrategy;
 use App\Balance\Model\IncomeType;
 use App\Balance\Repository\IncomeTypeRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,7 +22,7 @@ class TypeManager
 
     public function __construct(
         BalanceHydrator $hydrator,
-        TypeHydratorStrategy $strategy,
+        TypeHydratingStrategy $strategy,
         IncomeTypeRepository $typeRepository,
         UserManager $userManager
     ) {

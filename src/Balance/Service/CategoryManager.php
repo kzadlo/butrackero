@@ -5,7 +5,7 @@ namespace App\Balance\Service;
 use App\Application\Model\User;
 use App\Application\Service\UserManager;
 use App\Balance\Hydrator\BalanceHydrator;
-use App\Balance\Hydrator\CategoryHydratorStrategy;
+use App\Balance\Hydrator\CategoryHydratingStrategy;
 use App\Balance\Model\ExpenseCategory;
 use App\Balance\Repository\ExpenseCategoryRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,7 +22,7 @@ class CategoryManager
 
     public function __construct(
         BalanceHydrator $hydrator,
-        CategoryHydratorStrategy $strategy,
+        CategoryHydratingStrategy $strategy,
         ExpenseCategoryRepository $categoryRepository,
         UserManager $userManager
     ) {

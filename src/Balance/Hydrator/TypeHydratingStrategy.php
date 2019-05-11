@@ -3,11 +3,11 @@
 namespace App\Balance\Hydrator;
 
 use App\Balance\Model\BalanceEntityInterface;
-use App\Balance\Model\ExpenseCategory;
+use App\Balance\Model\IncomeType;
 
-final class CategoryHydratorStrategy implements HydrationStrategyInterface
+final class TypeHydratingStrategy implements HydratingStrategyInterface
 {
-    /** @var ExpenseCategory $entity */
+    /** @var IncomeType $entity */
     public function extract(BalanceEntityInterface $entity): array
     {
         return [
@@ -19,7 +19,7 @@ final class CategoryHydratorStrategy implements HydrationStrategyInterface
 
     public function hydrate(array $data): BalanceEntityInterface
     {
-        return (new ExpenseCategory($data['name'], $data['author']))
+        return (new IncomeType($data['name'], $data['author']))
             ->changeDescription($data['description']);
     }
 }

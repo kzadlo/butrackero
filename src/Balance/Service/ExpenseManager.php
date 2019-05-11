@@ -6,7 +6,7 @@ use App\Application\Model\User;
 use App\Application\Service\UserManager;
 use App\Balance\Model\Expense;
 use App\Balance\Hydrator\BalanceHydrator;
-use App\Balance\Hydrator\ExpenseHydratorStrategy;
+use App\Balance\Hydrator\ExpenseHydratingStrategy;
 use App\Balance\Repository\ExpenseRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -22,7 +22,7 @@ class ExpenseManager
 
     public function __construct(
         BalanceHydrator $hydrator,
-        ExpenseHydratorStrategy $strategy,
+        ExpenseHydratingStrategy $strategy,
         ExpenseRepository $expenseRepository,
         UserManager $userManager
     ) {

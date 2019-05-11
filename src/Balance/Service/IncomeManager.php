@@ -6,7 +6,7 @@ use App\Application\Model\User;
 use App\Application\Service\UserManager;
 use App\Balance\Model\Income;
 use App\Balance\Hydrator\BalanceHydrator;
-use App\Balance\Hydrator\IncomeHydratorStrategy;
+use App\Balance\Hydrator\IncomeHydratingStrategy;
 use App\Balance\Repository\IncomeRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -22,7 +22,7 @@ class IncomeManager
 
     public function __construct(
         BalanceHydrator $hydrator,
-        IncomeHydratorStrategy $strategy,
+        IncomeHydratingStrategy $strategy,
         IncomeRepository $incomeRepository,
         UserManager $userManager
     ) {

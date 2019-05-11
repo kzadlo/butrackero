@@ -4,7 +4,7 @@ namespace App\Balance\Hydrator;
 
 use App\Balance\Model\BalanceEntityInterface;
 
-interface HydrationStrategyInterface
+interface HydratingStrategyInterface
 {
     public function extract(BalanceEntityInterface $entity): array;
 
