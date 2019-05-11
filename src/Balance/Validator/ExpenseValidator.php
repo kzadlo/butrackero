@@ -13,31 +13,48 @@ class ExpenseValidator extends AbstractBalanceValidator
 
     public function validate(array $expense): void
     {
-        $this->validateAmount($expense);
-        $this->validateCategory($expense);
+        if (!$this->validateExpenseArray($expense)) {
+            return;
+        };
+
+        $this->validateAmount($expense['amount']);
+        $this->validateCategory($expense['category']);
     }
 
-    public function validateAmount(array $expense): bool
+    public function validateExpenseArray(array $expense): bool
     {
+        $isValid = true;
+
         if (!$this->hasArrayKey('amount', $expense)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_KEY_NOT_EXISTS);
 
-            return false;
+            $isValid = false;
         }
 
-        if ($this->isNull($expense['amount'])) {
+        if (!$this->hasArrayKey('category', $expense)) {
+            $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_KEY_NOT_EXISTS);
+
+            $isValid = false;
+        }
+
+        return $isValid;
+    }
+
+    public function validateAmount(?float $amount): bool
+    {
+        if ($this->isNull($amount)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_NULL);
 
             return false;
         }
 
-        if (!$this->isFloat($expense['amount'])) {
+        if (!$this->isFloat($amount)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_NOT_FLOAT);
 
             return false;
         }
 
-        if (!$this->isGreaterThanZero($expense['amount'])) {
+        if (!$this->isGreaterThanZero($amount)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_LESS_OR_EQUAL_ZERO);
 
             return false;
@@ -46,22 +63,16 @@ class ExpenseValidator extends AbstractBalanceValidator
         return true;
     }
 
-    public function validateCategory(array $expense): bool
+    public function validateCategory(?string $category): bool
     {
-        if (!$this->hasArrayKey('category', $expense)) {
-            $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_KEY_NOT_EXISTS);
-
-            return false;
-        }
-
-        if ($this->isNull($expense['category'])) {
+        if ($this->isNull($category)) {
             $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_IS_NULL);
 
             return false;
         }
 
-        if (!$this->isString($expense['category'])) {
-            $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_IS_NOT_INT);
+        if (!$this->isString($category)) {
+            $this->addError(self::ERROR_NAME_CATEGORY, self::MESSAGE_IS_NOT_STRING);
 
             return false;
         }

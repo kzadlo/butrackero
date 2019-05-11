@@ -171,11 +171,11 @@ class IncomeTypeRestController extends AbstractController
         $this->typeValidator->validateTypeExists($type);
 
         if ($this->typeValidator->hasArrayKey('name', $typeData)) {
-            $this->typeValidator->validateName($typeData);
+            $this->typeValidator->validateName($typeData['name']);
         }
 
         if ($this->typeValidator->hasArrayKey('description', $typeData)) {
-            $this->typeValidator->validateDescription($typeData);
+            $this->typeValidator->validateDescription($typeData['description']);
         }
 
         if (!$this->typeValidator->isValid()) {

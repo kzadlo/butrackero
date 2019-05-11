@@ -171,11 +171,11 @@ class ExpenseCategoryRestController extends AbstractController
         $this->categoryValidator->validateCategoryExists($category);
 
         if ($this->categoryValidator->hasArrayKey('name', $categoryData)) {
-            $this->categoryValidator->validateName($categoryData);
+            $this->categoryValidator->validateName($categoryData['name']);
         }
 
         if ($this->categoryValidator->hasArrayKey('description', $categoryData)) {
-            $this->categoryValidator->validateDescription($categoryData);
+            $this->categoryValidator->validateDescription($categoryData['description']);
         }
 
         if (!$this->categoryValidator->isValid()) {

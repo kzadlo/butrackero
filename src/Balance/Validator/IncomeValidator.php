@@ -13,31 +13,48 @@ class IncomeValidator extends AbstractBalanceValidator
 
     public function validate(array $income): void
     {
-        $this->validateAmount($income);
-        $this->validateType($income);
+        if (!$this->validateIncomeArray($income)) {
+            return;
+        };
+
+        $this->validateAmount($income['amount']);
+        $this->validateType($income['type']);
     }
 
-    public function validateAmount(array $income): bool
+    public function validateIncomeArray(array $income): bool
     {
+        $isValid = true;
+
         if (!$this->hasArrayKey('amount', $income)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_KEY_NOT_EXISTS);
 
-            return false;
+            $isValid = false;
         }
 
-        if ($this->isNull($income['amount'])) {
+        if (!$this->hasArrayKey('type', $income)) {
+            $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_KEY_NOT_EXISTS);
+
+            $isValid = false;
+        }
+
+        return $isValid;
+    }
+
+    public function validateAmount(?float $amount): bool
+    {
+        if ($this->isNull($amount)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_NULL);
 
             return false;
         }
 
-        if (!$this->isFloat($income['amount'])) {
+        if (!$this->isFloat($amount)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_NOT_FLOAT);
 
             return false;
         }
 
-        if (!$this->isGreaterThanZero($income['amount'])) {
+        if (!$this->isGreaterThanZero($amount)) {
             $this->addError(self::ERROR_NAME_AMOUNT, self::MESSAGE_IS_LESS_OR_EQUAL_ZERO);
 
             return false;
@@ -46,22 +63,16 @@ class IncomeValidator extends AbstractBalanceValidator
         return true;
     }
 
-    public function validateType(array $income): bool
+    public function validateType(?string $type): bool
     {
-        if (!$this->hasArrayKey('type', $income)) {
-            $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_KEY_NOT_EXISTS);
-
-            return false;
-        }
-
-        if ($this->isNull($income['type'])) {
+        if ($this->isNull($type)) {
             $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_IS_NULL);
 
             return false;
         }
 
-        if (!$this->isString($income['type'])) {
-            $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_IS_NOT_INT);
+        if (!$this->isString($type)) {
+            $this->addError(self::ERROR_NAME_TYPE, self::MESSAGE_IS_NOT_STRING);
 
             return false;
         }

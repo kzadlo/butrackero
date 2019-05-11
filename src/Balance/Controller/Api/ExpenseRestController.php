@@ -180,11 +180,11 @@ class ExpenseRestController extends AbstractController
         $this->expenseValidator->validateExpenseExists($expense);
 
         if ($this->expenseValidator->hasArrayKey('amount', $expenseData)) {
-            $this->expenseValidator->validateAmount($expenseData);
+            $this->expenseValidator->validateAmount($expenseData['amount']);
         }
 
         if ($this->expenseValidator->hasArrayKey('category', $expenseData)) {
-            if ($this->expenseValidator->validateCategory($expenseData)) {
+            if ($this->expenseValidator->validateCategory($expenseData['category'])) {
                 $expenseData['category'] = $this->expenseCategoryRepository->findOneById($expenseData['category']);
                 $this->expenseValidator->validateCategoryExists($expenseData['category']);
             }

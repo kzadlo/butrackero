@@ -12,25 +12,42 @@ class TypeValidator extends AbstractBalanceValidator
 
     public function validate(array $type): void
     {
-        $this->validateName($type);
-        $this->validateDescription($type);
+        if (!$this->validateTypeArray($type)) {
+            return;
+        };
+
+        $this->validateName($type['name']);
+        $this->validateDescription($type['description']);
     }
 
-    public function validateName(array $type): bool
+    public function validateTypeArray(array $type): bool
     {
+        $isValid = true;
+
         if (!$this->hasArrayKey('name', $type)) {
             $this->addError(self::ERROR_NAME_NAME, self::MESSAGE_KEY_NOT_EXISTS);
 
-            return false;
+            $isValid = false;
         }
 
-        if ($this->isNull($type['name'])) {
+        if (!$this->hasArrayKey('description', $type)) {
+            $this->addError(self::ERROR_NAME_DESCRIPTION, self::MESSAGE_KEY_NOT_EXISTS);
+
+            $isValid = false;
+        }
+
+        return $isValid;
+    }
+
+    public function validateName(?string $name): bool
+    {
+        if ($this->isNull($name)) {
             $this->addError(self::ERROR_NAME_NAME, self::MESSAGE_IS_NULL);
 
             return false;
         }
 
-        if (!$this->isShorterThan($type['name'], 128)) {
+        if (!$this->isShorterThan($name, 128)) {
             $this->addError(self::ERROR_NAME_NAME, self::MESSAGE_IS_SHORTER_THAN);
 
             return false;
@@ -39,15 +56,9 @@ class TypeValidator extends AbstractBalanceValidator
         return true;
     }
 
-    public function validateDescription(array $type): bool
+    public function validateDescription(?string $description): bool
     {
-        if (!$this->hasArrayKey('description', $type)) {
-            $this->addError(self::ERROR_NAME_DESCRIPTION, self::MESSAGE_KEY_NOT_EXISTS);
-
-            return false;
-        }
-
-        if (!$this->isShorterThan($type['description'], 255)) {
+        if (!$this->isShorterThan($description, 255)) {
             $this->addError(self::ERROR_NAME_DESCRIPTION, self::MESSAGE_IS_SHORTER_THAN);
 
             return false;

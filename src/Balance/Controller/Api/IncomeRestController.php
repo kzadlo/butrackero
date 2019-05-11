@@ -180,11 +180,11 @@ class IncomeRestController extends AbstractController
         $this->incomeValidator->validateIncomeExists($income);
 
         if ($this->incomeValidator->hasArrayKey('amount', $incomeData)) {
-            $this->incomeValidator->validateAmount($incomeData);
+            $this->incomeValidator->validateAmount($incomeData['amount']);
         }
 
         if ($this->incomeValidator->hasArrayKey('type', $incomeData)) {
-            if ($this->incomeValidator->validateType($incomeData)) {
+            if ($this->incomeValidator->validateType($incomeData['type'])) {
                 $incomeData['type'] = $this->incomeTypeRepository->findOneById($incomeData['type']);
                 $this->incomeValidator->validateTypeExists($incomeData['type']);
             }

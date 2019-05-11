@@ -12,25 +12,42 @@ class CategoryValidator extends AbstractBalanceValidator
 
     public function validate(array $category): void
     {
-        $this->validateName($category);
-        $this->validateDescription($category);
+        if (!$this->validateCategoryArray($category)) {
+            return;
+        };
+
+        $this->validateName($category['name']);
+        $this->validateDescription($category['description']);
     }
 
-    public function validateName(array $category): bool
+    public function validateCategoryArray(array $category): bool
     {
+        $isValid = true;
+
         if (!$this->hasArrayKey('name', $category)) {
             $this->addError(self::ERROR_NAME_NAME, self::MESSAGE_KEY_NOT_EXISTS);
 
-            return false;
+            $isValid = false;
         }
 
-        if ($this->isNull($category['name'])) {
+        if (!$this->hasArrayKey('description', $category)) {
+            $this->addError(self::ERROR_NAME_DESCRIPTION, self::MESSAGE_KEY_NOT_EXISTS);
+
+            $isValid = false;
+        }
+
+        return $isValid;
+    }
+
+    public function validateName(?string $name): bool
+    {
+        if ($this->isNull($name)) {
             $this->addError(self::ERROR_NAME_NAME, self::MESSAGE_IS_NULL);
 
             return false;
         }
 
-        if (!$this->isShorterThan($category['name'], 128)) {
+        if (!$this->isShorterThan($name, 128)) {
             $this->addError(self::ERROR_NAME_NAME, self::MESSAGE_IS_SHORTER_THAN);
 
             return false;
@@ -39,15 +56,9 @@ class CategoryValidator extends AbstractBalanceValidator
         return true;
     }
 
-    public function validateDescription(array $category): bool
+    public function validateDescription(?string $description): bool
     {
-        if (!$this->hasArrayKey('description', $category)) {
-            $this->addError(self::ERROR_NAME_DESCRIPTION, self::MESSAGE_KEY_NOT_EXISTS);
-
-            return false;
-        }
-
-        if (!$this->isShorterThan($category['description'], 255)) {
+        if (!$this->isShorterThan($description, 255)) {
             $this->addError(self::ERROR_NAME_DESCRIPTION, self::MESSAGE_IS_SHORTER_THAN);
 
             return false;
