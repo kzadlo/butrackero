@@ -66,7 +66,7 @@ class ExpenseCategory implements BalanceEntityInterface
         return $this->description;
     }
 
-    public function changeDescription(string $description): ExpenseCategory
+    public function changeDescription(?string $description): ExpenseCategory
     {
         $this->description = $description;
         return $this;

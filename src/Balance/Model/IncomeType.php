@@ -66,7 +66,7 @@ class IncomeType implements BalanceEntityInterface
         return $this->description;
     }
 
-    public function changeDescription(string $description): IncomeType
+    public function changeDescription(?string $description): IncomeType
     {
         $this->description = $description;
         return $this;

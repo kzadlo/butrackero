@@ -17,6 +17,7 @@ interface ValidationInterface
     public const MESSAGE_IS_NOT_INT = "This value has to be int";
     public const MESSAGE_IS_NOT_STRING = "This value has to be string";
     public const MESSAGE_IS_SHORTER_THAN = "This value has to shorter";
+    public const MESSAGE_IS_LONGER_THAN = "This value has to longer";
 
     public function validate(array $object): void;
 }

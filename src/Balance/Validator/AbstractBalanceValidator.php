@@ -63,8 +63,13 @@ abstract class AbstractBalanceValidator implements ValidationInterface
         return is_string($value);
     }
 
-    public function isShorterThan(string $value, int $length): bool
+    public function isShorterThan(?string $value, int $length): bool
     {
         return (strlen($value) < $length);
+    }
+
+    public function isLongerThan(?string $value, int $length): bool
+    {
+        return (strlen($value) > $length);
     }
 }

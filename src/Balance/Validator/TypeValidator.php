@@ -47,6 +47,12 @@ final class TypeValidator extends AbstractBalanceValidator
             return false;
         }
 
+        if (!$this->isLongerThan($name, 2)) {
+            $this->addError(self::ERROR_NAME_NAME, self::MESSAGE_IS_LONGER_THAN);
+
+            return false;
+        }
+
         if (!$this->isShorterThan($name, 128)) {
             $this->addError(self::ERROR_NAME_NAME, self::MESSAGE_IS_SHORTER_THAN);
 
