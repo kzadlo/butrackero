@@ -5,7 +5,7 @@ namespace App\Balance\Validator;
 use App\Balance\Model\Expense;
 use App\Balance\Model\ExpenseCategory;
 
-class ExpenseValidator extends AbstractBalanceValidator
+final class ExpenseValidator extends AbstractBalanceValidator
 {
     private const ERROR_NAME_EXPENSE = 'expense';
     private const ERROR_NAME_AMOUNT = 'amount';

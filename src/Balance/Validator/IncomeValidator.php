@@ -5,7 +5,7 @@ namespace App\Balance\Validator;
 use App\Balance\Model\Income;
 use App\Balance\Model\IncomeType;
 
-class IncomeValidator extends AbstractBalanceValidator
+final class IncomeValidator extends AbstractBalanceValidator
 {
     private const ERROR_NAME_INCOME = 'income';
     private const ERROR_NAME_AMOUNT = 'amount';

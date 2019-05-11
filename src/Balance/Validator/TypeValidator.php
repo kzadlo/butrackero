@@ -4,7 +4,7 @@ namespace App\Balance\Validator;
 
 use App\Balance\Model\IncomeType;
 
-class TypeValidator extends AbstractBalanceValidator
+final class TypeValidator extends AbstractBalanceValidator
 {
     private const ERROR_NAME_TYPE = 'type';
     private const ERROR_NAME_NAME = 'name';
