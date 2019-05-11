@@ -27,6 +27,15 @@ class ExpenseCategoryRepository extends ServiceEntityRepository implements Repos
         $this->_em->flush();
     }
 
+    public function findOneById(UuidInterface $id): ?ExpenseCategory
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findByAuthorAndFilters(UuidInterface $authorId, array $filters, bool $count = false)
     {
         $query = $this->createQueryBuilder('c');

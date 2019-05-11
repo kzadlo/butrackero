@@ -27,6 +27,15 @@ class IncomeTypeRepository extends ServiceEntityRepository implements Repository
         $this->_em->flush();
     }
 
+    public function findOneById(UuidInterface $id): ?IncomeType
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findByAuthorAndFilters(UuidInterface $authorId, array $filters, bool $count = false)
     {
         $query = $this->createQueryBuilder('t');

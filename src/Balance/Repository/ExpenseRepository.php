@@ -27,6 +27,15 @@ class ExpenseRepository extends ServiceEntityRepository implements RepositoryInt
         $this->_em->flush();
     }
 
+    public function findOneById(UuidInterface $id): ?Expense
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findByAuthorAndFilters(UuidInterface $authorId, array $filters, bool $count = false)
     {
         $query = $this->createQueryBuilder('e');
