@@ -13,8 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
-    const ACTIVE_USER = 1;
-    const INACTIVE_USER = 0;
+    public const ACTIVE_USER = 1;
+    public const INACTIVE_USER = 0;
 
     /**
      * @ORM\Id

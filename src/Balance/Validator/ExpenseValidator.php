@@ -7,9 +7,9 @@ use App\Balance\Model\ExpenseCategory;
 
 class ExpenseValidator extends AbstractBalanceValidator
 {
-    const ERROR_NAME_EXPENSE = 'expense';
-    const ERROR_NAME_AMOUNT = 'amount';
-    const ERROR_NAME_CATEGORY = 'category';
+    private const ERROR_NAME_EXPENSE = 'expense';
+    private const ERROR_NAME_AMOUNT = 'amount';
+    private const ERROR_NAME_CATEGORY = 'category';
 
     public function validate(array $expense): void
     {

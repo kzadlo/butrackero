@@ -7,9 +7,9 @@ use App\Balance\Model\IncomeType;
 
 class IncomeValidator extends AbstractBalanceValidator
 {
-    const ERROR_NAME_INCOME = 'income';
-    const ERROR_NAME_AMOUNT = 'amount';
-    const ERROR_NAME_TYPE = 'type';
+    private const ERROR_NAME_INCOME = 'income';
+    private const ERROR_NAME_AMOUNT = 'amount';
+    private const ERROR_NAME_TYPE = 'type';
 
     public function validate(array $income): void
     {

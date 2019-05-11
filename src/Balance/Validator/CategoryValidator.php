@@ -6,9 +6,9 @@ use App\Balance\Model\ExpenseCategory;
 
 class CategoryValidator extends AbstractBalanceValidator
 {
-    const ERROR_NAME_CATEGORY = 'category';
-    const ERROR_NAME_NAME = 'name';
-    const ERROR_NAME_DESCRIPTION = 'description';
+    private const ERROR_NAME_CATEGORY = 'category';
+    private const ERROR_NAME_NAME = 'name';
+    private const ERROR_NAME_DESCRIPTION = 'description';
 
     public function validate(array $category): void
     {
