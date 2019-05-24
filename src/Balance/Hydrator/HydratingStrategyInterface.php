@@ -8,5 +8,5 @@ interface HydratingStrategyInterface
 {
     public function extract(BalanceEntityInterface $entity): array;
 
-    public function hydrate(array $data): BalanceEntityInterface;
+    public function hydrate(array $data, ?BalanceEntityInterface $entity): BalanceEntityInterface;
 }

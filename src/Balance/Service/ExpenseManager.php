@@ -39,7 +39,7 @@ class ExpenseManager
 
     public function createFromArray(array $expenseValues): Expense
     {
-        return $this->hydrator->hydrate($expenseValues, $this->hydrationStrategy);
+        return $this->hydrator->hydrate($expenseValues, null, $this->hydrationStrategy);
     }
 
     public function update(Expense $expense, array $updateValues): void

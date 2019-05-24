@@ -18,8 +18,16 @@ final class ExpenseHydratingStrategy implements HydratingStrategyInterface
         ];
     }
 
-    public function hydrate(array $data): BalanceEntityInterface
+    public function hydrate(array $data, ?BalanceEntityInterface $entity): BalanceEntityInterface
     {
-        return new Expense($data['amount'], $data['category'], $data['author']);
+        if (!$entity) {
+            return new Expense($data['amount'], $data['category'], $data['author']);
+        }
+
+        /** @var Expense $entity */
+        return $entity
+            ->changeAmount($data['amount'])
+            ->changeCategory($data['category']);
+
     }
 }

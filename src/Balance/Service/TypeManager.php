@@ -39,7 +39,7 @@ class TypeManager
 
     public function createFromArray(array $typeValues): IncomeType
     {
-        return $this->hydrator->hydrate($typeValues, $this->hydrationStrategy);
+        return $this->hydrator->hydrate($typeValues, null, $this->hydrationStrategy);
     }
 
     public function update(IncomeType $type, array $updateValues): void

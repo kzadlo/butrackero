@@ -39,7 +39,7 @@ class CategoryManager
 
     public function createFromArray(array $categoryValues): ExpenseCategory
     {
-        return $this->hydrator->hydrate($categoryValues, $this->hydrationStrategy);
+        return $this->hydrator->hydrate($categoryValues, null, $this->hydrationStrategy);
     }
 
     public function update(ExpenseCategory $category, array $updateValues): void

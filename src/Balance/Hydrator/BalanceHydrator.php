@@ -11,9 +11,12 @@ class BalanceHydrator
         return $strategy->extract($entity);
     }
 
-    public function hydrate(array $data, HydratingStrategyInterface $strategy): BalanceEntityInterface
-    {
-        return $strategy->hydrate($data);
+    public function hydrate(
+        array $data,
+        ?BalanceEntityInterface $entity,
+        HydratingStrategyInterface $strategy
+    ): BalanceEntityInterface {
+        return $strategy->hydrate($data, $entity);
     }
 
     public function extractSeveral(array $entities, HydratingStrategyInterface $strategy): array

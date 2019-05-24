@@ -39,7 +39,7 @@ class IncomeManager
 
     public function createFromArray(array $incomeValues): Income
     {
-        return $this->hydrator->hydrate($incomeValues, $this->hydrationStrategy);
+        return $this->hydrator->hydrate($incomeValues, null, $this->hydrationStrategy);
     }
 
     public function update(Income $income, array $updateValues): void

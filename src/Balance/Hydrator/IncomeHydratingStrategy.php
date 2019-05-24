@@ -18,8 +18,15 @@ final class IncomeHydratingStrategy implements HydratingStrategyInterface
         ];
     }
 
-    public function hydrate(array $data): BalanceEntityInterface
+    public function hydrate(array $data, ?BalanceEntityInterface $entity): BalanceEntityInterface
     {
-        return new Income($data['amount'], $data['type'], $data['author']);
+        if (!$entity) {
+            return new Income($data['amount'], $data['type'], $data['author']);
+        }
+
+        /** @var Income $entity */
+        return $entity
+            ->changeAmount($data['amount'])
+            ->changeType($data['type']);
     }
 }

@@ -17,9 +17,16 @@ final class TypeHydratingStrategy implements HydratingStrategyInterface
         ];
     }
 
-    public function hydrate(array $data): BalanceEntityInterface
+    public function hydrate(array $data, ?BalanceEntityInterface $entity): BalanceEntityInterface
     {
-        return (new IncomeType($data['name'], $data['author']))
+        if (!$entity) {
+            return (new IncomeType($data['name'], $data['author']))
+                ->changeDescription($data['description']);
+        }
+
+        /** @var IncomeType $entity */
+        return $entity
+            ->changeName($data['name'])
             ->changeDescription($data['description']);
     }
 }
