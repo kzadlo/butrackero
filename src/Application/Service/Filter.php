@@ -8,14 +8,16 @@ class Filter
 
     public function prepare(array $filters): void
     {
+        $this->clear();
+
         foreach ($filters as $key => $filter) {
             $this->add($key, $filter);
         }
     }
 
-    public function get(string $key): string
+    public function get(string $key): ?string
     {
-        return $this->filters[$key];
+        return $this->filters[$key] ?? null;
     }
 
     public function add(string $key, string $filter): void
@@ -43,5 +45,10 @@ class Filter
     public function hasFilters(): bool
     {
         return !empty($this->filters);
+    }
+
+    public function clear()
+    {
+        $this->filters = [];
     }
 }
