@@ -6,7 +6,7 @@ use App\Application\Model\User;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class UserTest extends TestCase
+final class UserTest extends TestCase
 {
     /** @var User $user */
     private $user;

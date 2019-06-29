@@ -9,7 +9,7 @@ use App\Balance\Validator\TypeValidator;
 use App\Balance\Validator\ValidationInterface;
 use PHPUnit\Framework\TestCase;
 
-class TypeValidatorTest extends TestCase
+final class TypeValidatorTest extends TestCase
 {
     /** @var TypeValidator $typeValidator */
     private $typeValidator;

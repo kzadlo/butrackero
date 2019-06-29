@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ExpenseTest extends TestCase
+final class ExpenseTest extends TestCase
 {
     /** @var Expense $expense */
     private $expense;

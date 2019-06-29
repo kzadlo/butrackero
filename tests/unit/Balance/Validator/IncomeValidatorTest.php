@@ -10,7 +10,7 @@ use App\Balance\Validator\IncomeValidator;
 use App\Balance\Validator\ValidationInterface;
 use PHPUnit\Framework\TestCase;
 
-class IncomeValidatorTest extends TestCase
+final class IncomeValidatorTest extends TestCase
 {
     /** @var IncomeValidator $incomeValidator */
     private $incomeValidator;

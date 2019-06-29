@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class IncomeTypeTest extends TestCase
+final class IncomeTypeTest extends TestCase
 {
     /** @var IncomeType $incomeType */
     private $incomeType;

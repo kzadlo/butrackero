@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ExpenseCategoryTest extends TestCase
+final class ExpenseCategoryTest extends TestCase
 {
     /** @var ExpenseCategory $expenseCategory */
     private $expenseCategory;

@@ -6,7 +6,7 @@ use App\Application\Service\Paginator;
 use App\Application\Service\PaginatorInterface;
 use PHPUnit\Framework\TestCase;
 
-class PaginatorTest extends TestCase
+final class PaginatorTest extends TestCase
 {
     /** @var PaginatorInterface $paginator */
     private $paginator;
@@ -99,11 +99,27 @@ class PaginatorTest extends TestCase
         $this->assertSame(9, $this->paginator->previousPage());
     }
 
-    public function testIsPageFromRightRange()
+    /** @dataProvider provider */
+    public function testIsPageFromRightRange(bool $expected, int $page, int $lastPage)
     {
-        $this->assertTrue($this->paginator->isPageOutOfRange(0, 0));
-        $this->assertTrue($this->paginator->isPageOutOfRange(0, 1));
-        $this->assertTrue($this->paginator->isPageOutOfRange(2, 1));
-        $this->assertFalse($this->paginator->isPageOutOfRange(1, 1));
+        $this->assertSame($expected, $this->paginator->isPageOutOfRange($page, $lastPage));
+    }
+
+    public function provider()
+    {
+        return [
+            'zero zero' => [
+                true, 0, 0
+            ],
+            'zero one' => [
+                true, 0, 1
+            ],
+            'two one' => [
+                true, 2, 1
+            ],
+            'one one' => [
+                false, 1, 1
+            ],
+        ];
     }
 }

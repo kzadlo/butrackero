@@ -8,7 +8,7 @@ use App\Balance\Validator\AbstractBalanceValidator;
 use App\Balance\Validator\ValidationInterface;
 use PHPUnit\Framework\TestCase;
 
-class AbstractBalanceValidatorTest extends TestCase
+final class AbstractBalanceValidatorTest extends TestCase
 {
     /** @var AbstractBalanceValidator $balanceValidator */
     private $balanceValidator;

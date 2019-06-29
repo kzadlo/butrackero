@@ -10,7 +10,7 @@ use App\Balance\Validator\ExpenseValidator;
 use App\Balance\Validator\ValidationInterface;
 use PHPUnit\Framework\TestCase;
 
-class ExpenseValidatorTest extends TestCase
+final class ExpenseValidatorTest extends TestCase
 {
     /** @var ExpenseValidator $expenseValidator */
     private $expenseValidator;

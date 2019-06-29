@@ -5,7 +5,7 @@ namespace App\Tests\Application\Service;
 use App\Application\Service\Filter;
 use PHPUnit\Framework\TestCase;
 
-class FilterTest extends TestCase
+final class FilterTest extends TestCase
 {
     /** @var Filter $filter */
     private $filter;
@@ -15,24 +15,20 @@ class FilterTest extends TestCase
         $this->filter = new Filter();
     }
 
-    public function testCanPrepareFilters()
+    /** @dataProvider provider */
+    public function testCanPrepareFilters(array $filters)
     {
-        $filters = [
-            'offset' => '20',
-            'limit' => '10',
-        ];
-
         $this->filter->prepare($filters);
 
-        $this->assertCount(2, $this->filter->getAll());
+        $this->assertCount(count($filters), $this->filter->getAll());
 
-        $filters = [
-            'limit' => '20'
+        $newFilters = [
+            'one' => '10'
         ];
 
-        $this->filter->prepare($filters);
+        $this->filter->prepare($newFilters);
 
-        $this->assertCount(1, $this->filter->getAll());
+        $this->assertCount(count($newFilters), $this->filter->getAll());
     }
 
     public function testCanGetFilter()
@@ -49,32 +45,24 @@ class FilterTest extends TestCase
         $this->assertCount(1, $this->filter->getAll());
     }
 
-    public function testCanRemoveFilter()
+    /** @dataProvider provider */
+    public function testCanRemoveFilter(array $filters)
     {
-        $filters = [
-            'offset' => '20',
-            'limit' => '10',
-        ];
-
         $this->filter->prepare($filters);
 
-        $this->assertSame('10', $this->filter->get('limit'));
+        $this->assertSame(reset($filters), $this->filter->get(key($filters)));
 
-        $this->filter->remove('limit');
+        $this->filter->remove(key($filters));
 
-        $this->assertNull($this->filter->get('limit'));
+        $this->assertNull($this->filter->get(key($filters)));
     }
 
-    public function testCanGetFilters()
+    /** @dataProvider provider */
+    public function testCanGetFilters(array $filters)
     {
-        $filters = [
-            'offset' => '20',
-            'limit' => '10',
-        ];
-
         $this->filter->prepare($filters);
 
-        $this->assertCount(2, $this->filter->getAll());
+        $this->assertCount(count($filters), $this->filter->getAll());
     }
 
     public function testHasFilter()
@@ -104,5 +92,29 @@ class FilterTest extends TestCase
         $this->filter->clear();
 
         $this->assertFalse($this->filter->hasFilters());
+    }
+
+    public function provider()
+    {
+        return [
+            'one element array' => [
+                [
+                    'one' => '10'
+                ]
+            ],
+            'two elements array' => [
+                [
+                    'one' => '10',
+                    'two' => '20'
+                ]
+            ],
+            'three elements array' => [
+                [
+                    'one' => '10',
+                    'two' => '20',
+                    'three' => '30'
+                ]
+            ]
+        ];
     }
 }

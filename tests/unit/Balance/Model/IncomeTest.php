@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class IncomeTest extends TestCase
+final class IncomeTest extends TestCase
 {
     /** @var Income $income */
     private $income;

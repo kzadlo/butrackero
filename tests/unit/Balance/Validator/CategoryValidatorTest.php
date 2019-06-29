@@ -9,7 +9,7 @@ use App\Balance\Validator\CategoryValidator;
 use App\Balance\Validator\ValidationInterface;
 use PHPUnit\Framework\TestCase;
 
-class CategoryValidatorTest extends TestCase
+final class CategoryValidatorTest extends TestCase
 {
     /** @var CategoryValidator $categoryValidator */
     private $categoryValidator;
