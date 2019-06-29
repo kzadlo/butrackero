@@ -28,6 +28,5 @@ final class ExpenseHydratingStrategy implements HydratingStrategyInterface
         return $entity
             ->changeAmount($data['amount'])
             ->changeCategory($data['category']);
-
     }
 }

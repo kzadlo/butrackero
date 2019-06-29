@@ -55,7 +55,7 @@ final class CategoryValidatorTest extends TestCase
         $this->assertFalse($this->categoryValidator->validateName(null));
         $this->assertFalse($this->categoryValidator->validateName('22'));
         $this->assertFalse($this->categoryValidator->validateName(
-           'Test that name has less than 128 characters. Test that name has less than 128 characters.
+            'Test that name has less than 128 characters. Test that name has less than 128 characters.
             Test that name has less than 128 characters. Test that name has less than 128 characters.'
         ));
         $this->assertTrue($this->categoryValidator->validateName('Tes'));
@@ -64,7 +64,7 @@ final class CategoryValidatorTest extends TestCase
     public function testValidateDescription()
     {
         $this->assertFalse($this->categoryValidator->validateDescription(
-           'Test that description has less than 255 characters. Test that description has less than 255 characters.
+            'Test that description has less than 255 characters. Test that description has less than 255 characters.
             Test that description has less than 255 characters. Test that description has less than 255 characters.
             Test that description has less than 255 characters. Test that description has less than 255 characters.'
         ));
