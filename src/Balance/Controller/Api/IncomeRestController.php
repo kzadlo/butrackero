@@ -8,6 +8,7 @@ use App\Balance\Repository\IncomeTypeRepository;
 use App\Balance\Service\IncomeManager;
 use App\Balance\Validator\IncomeValidator;
 use App\Application\Service\PaginatorInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,11 +105,11 @@ class IncomeRestController extends AbstractController
             ], 415);
         }
 
-        $incomeData = json_decode($request->getContent(), true);
+        $incomeData = json_decode($request->getContent(), true) ?? [];
         $this->incomeValidator->validate($incomeData);
 
         if ($this->incomeValidator->isValid()) {
-            $incomeData['type'] = $this->incomeTypeRepository->findOneById($incomeData['type']);
+            $incomeData['type'] = $this->incomeTypeRepository->findOneById(Uuid::fromString($incomeData['type']));
             $this->incomeValidator->validateTypeExists($incomeData['type']);
         }
 
@@ -130,7 +131,7 @@ class IncomeRestController extends AbstractController
     /** @Route("api/incomes/{id}", methods={"GET"}, name="api_incomes_get") */
     public function getBy(string $id): JsonResponse
     {
-        $income = $this->incomeRepository->findOneById($id);
+        $income = $this->incomeRepository->findOneById(Uuid::fromString($id));
 
         $this->incomeValidator->validateIncomeExists($income);
 
@@ -148,7 +149,7 @@ class IncomeRestController extends AbstractController
     /** @Route("api/incomes/{id}", methods={"DELETE"}, name="api_incomes_delete") */
     public function delete(string $id): JsonResponse
     {
-        $income = $this->incomeRepository->findOneById($id);
+        $income = $this->incomeRepository->findOneById(Uuid::fromString($id));
 
         $this->incomeValidator->validateIncomeExists($income);
 
@@ -174,9 +175,9 @@ class IncomeRestController extends AbstractController
             ], 415);
         }
 
-        $incomeData = json_decode($request->getContent(), true);
+        $incomeData = json_decode($request->getContent(), true) ?? [];
 
-        $income = $this->incomeRepository->findOneById($id);
+        $income = $this->incomeRepository->findOneById(Uuid::fromString($id));
         $this->incomeValidator->validateIncomeExists($income);
 
         if ($this->incomeValidator->hasArrayKey('amount', $incomeData)) {
@@ -185,7 +186,7 @@ class IncomeRestController extends AbstractController
 
         if ($this->incomeValidator->hasArrayKey('type', $incomeData)) {
             if ($this->incomeValidator->validateType($incomeData['type'])) {
-                $incomeData['type'] = $this->incomeTypeRepository->findOneById($incomeData['type']);
+                $incomeData['type'] = $this->incomeTypeRepository->findOneById(Uuid::fromString($incomeData['type']));
                 $this->incomeValidator->validateTypeExists($incomeData['type']);
             }
         }

@@ -80,7 +80,7 @@
             "git pull",
             "./bin/console cache:clear",
             "./vendor/bin/phpcs -n",
-            "./bin/phpunit",
+            "./vendor/bin/simple-phpunit",
             "./bin/console doctrine:schema:update --force",
             "./bin/console doctrine:schema:validate"
         ]

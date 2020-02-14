@@ -100,7 +100,7 @@ class IncomeTypeRestController extends AbstractController
             ], 415);
         }
 
-        $typeData = json_decode($request->getContent(), true);
+        $typeData = json_decode($request->getContent(), true) ?? [];
         $this->typeValidator->validate($typeData);
 
         if (!$this->typeValidator->isValid()) {
@@ -165,7 +165,7 @@ class IncomeTypeRestController extends AbstractController
             ], 415);
         }
 
-        $typeData = json_decode($request->getContent(), true);
+        $typeData = json_decode($request->getContent(), true) ?? [];
 
         $type = $this->incomeTypeRepository->findOneById(Uuid::fromString($id));
         $this->typeValidator->validateTypeExists($type);

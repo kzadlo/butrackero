@@ -100,7 +100,7 @@ class ExpenseCategoryRestController extends AbstractController
             ], 415);
         }
 
-        $categoryData = json_decode($request->getContent(), true);
+        $categoryData = json_decode($request->getContent(), true) ?? [];
         $this->categoryValidator->validate($categoryData);
 
         if (!$this->categoryValidator->isValid()) {
@@ -165,7 +165,7 @@ class ExpenseCategoryRestController extends AbstractController
             ], 415);
         }
 
-        $categoryData = json_decode($request->getContent(), true);
+        $categoryData = json_decode($request->getContent(), true) ?? [];
 
         $category = $this->expenseCategoryRepository->findOneById(Uuid::fromString($id));
         $this->categoryValidator->validateCategoryExists($category);

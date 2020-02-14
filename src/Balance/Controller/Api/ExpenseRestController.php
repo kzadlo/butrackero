@@ -8,6 +8,7 @@ use App\Balance\Repository\ExpenseRepository;
 use App\Balance\Service\ExpenseManager;
 use App\Balance\Validator\ExpenseValidator;
 use App\Application\Service\PaginatorInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,11 +105,11 @@ class ExpenseRestController extends AbstractController
             ], 415);
         }
 
-        $expenseData = json_decode($request->getContent(), true);
+        $expenseData = json_decode($request->getContent(), true) ?? [];
         $this->expenseValidator->validate($expenseData);
 
         if ($this->expenseValidator->isValid()) {
-            $expenseData['category'] = $this->expenseCategoryRepository->findOneById($expenseData['category']);
+            $expenseData['category'] = $this->expenseCategoryRepository->findOneById(Uuid::fromString($expenseData['category']));
             $this->expenseValidator->validateCategoryExists($expenseData['category']);
         }
 
@@ -130,7 +131,7 @@ class ExpenseRestController extends AbstractController
     /** @Route("api/expenses/{id}", methods={"GET"}, name="api_expenses_get") */
     public function getBy(string $id): JsonResponse
     {
-        $expense = $this->expenseRepository->findOneById($id);
+        $expense = $this->expenseRepository->findOneById(Uuid::fromString($id));
 
         $this->expenseValidator->validateExpenseExists($expense);
 
@@ -148,7 +149,7 @@ class ExpenseRestController extends AbstractController
     /** @Route("api/expenses/{id}", methods={"DELETE"}, name="api_expenses_delete") */
     public function delete(string $id): JsonResponse
     {
-        $expense = $this->expenseRepository->findOneById($id);
+        $expense = $this->expenseRepository->findOneById(Uuid::fromString($id));
 
         $this->expenseValidator->validateExpenseExists($expense);
 
@@ -174,9 +175,9 @@ class ExpenseRestController extends AbstractController
             ], 415);
         }
 
-        $expenseData = json_decode($request->getContent(), true);
+        $expenseData = json_decode($request->getContent(), true) ?? [];
 
-        $expense = $this->expenseRepository->findOneById($id);
+        $expense = $this->expenseRepository->findOneById(Uuid::fromString($id));
         $this->expenseValidator->validateExpenseExists($expense);
 
         if ($this->expenseValidator->hasArrayKey('amount', $expenseData)) {
@@ -185,7 +186,7 @@ class ExpenseRestController extends AbstractController
 
         if ($this->expenseValidator->hasArrayKey('category', $expenseData)) {
             if ($this->expenseValidator->validateCategory($expenseData['category'])) {
-                $expenseData['category'] = $this->expenseCategoryRepository->findOneById($expenseData['category']);
+                $expenseData['category'] = $this->expenseCategoryRepository->findOneById(Uuid::fromString($expenseData['category']));
                 $this->expenseValidator->validateCategoryExists($expenseData['category']);
             }
         }
