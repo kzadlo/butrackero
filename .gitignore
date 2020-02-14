@@ -1,4 +1,7 @@
+###> phpstorm ###
 .idea/
+###< phpstorm ###
+
 ###> symfony/framework-bundle ###
 /.env
 /public/bundles/
@@ -11,18 +14,16 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
-###> symfony/web-server-bundle ###
-/.web-server-pid
-###< symfony/web-server-bundle ###
-
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
-
-phpcs.xml
-.phpcs-cache
 
 ###> squizlabs/php_codesniffer ###
 /.phpcs-cache
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
+
+###> doctrine ###
+/config/packages/doctrine.yaml
+###< doctrine ###
+
