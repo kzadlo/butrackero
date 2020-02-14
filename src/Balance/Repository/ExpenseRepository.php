@@ -5,12 +5,12 @@ namespace App\Balance\Repository;
 use App\Balance\Model\BalanceEntityInterface;
 use App\Balance\Model\Expense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 final class ExpenseRepository extends ServiceEntityRepository implements RepositoryInterface
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Expense::class);
     }
