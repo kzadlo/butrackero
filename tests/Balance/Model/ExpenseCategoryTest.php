@@ -17,7 +17,7 @@ final class ExpenseCategoryTest extends TestCase
     /** @var UserInterface $author */
     private $author;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->author = new User('Tester');
 

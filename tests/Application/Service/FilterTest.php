@@ -10,7 +10,7 @@ final class FilterTest extends TestCase
     /** @var Filter $filter */
     private $filter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->filter = new Filter();
     }

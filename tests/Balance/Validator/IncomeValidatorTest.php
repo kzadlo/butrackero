@@ -15,7 +15,7 @@ final class IncomeValidatorTest extends TestCase
     /** @var IncomeValidator $incomeValidator */
     private $incomeValidator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->incomeValidator = new IncomeValidator();
     }

@@ -17,7 +17,7 @@ final class IncomeTypeTest extends TestCase
     /** @var UserInterface $author */
     private $author;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->author = new User('Tester');
         $this->incomeType = new IncomeType('TestName', $this->author);

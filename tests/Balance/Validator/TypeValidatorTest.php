@@ -14,7 +14,7 @@ final class TypeValidatorTest extends TestCase
     /** @var TypeValidator $typeValidator */
     private $typeValidator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->typeValidator = new TypeValidator();
     }

@@ -11,7 +11,7 @@ final class PaginatorTest extends TestCase
     /** @var PaginatorInterface $paginator */
     private $paginator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $page = 1;
         $limit = 25;

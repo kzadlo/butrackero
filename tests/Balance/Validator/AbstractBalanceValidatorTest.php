@@ -13,7 +13,7 @@ final class AbstractBalanceValidatorTest extends TestCase
     /** @var AbstractBalanceValidator $balanceValidator */
     private $balanceValidator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->balanceValidator = $this
             ->getMockBuilder(AbstractBalanceValidator::class)

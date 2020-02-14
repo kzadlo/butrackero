@@ -15,7 +15,7 @@ final class ExpenseValidatorTest extends TestCase
     /** @var ExpenseValidator $expenseValidator */
     private $expenseValidator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->expenseValidator = new ExpenseValidator();
     }

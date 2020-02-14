@@ -5,7 +5,7 @@
 - PHP 7.3
 - Symfony 4.4
 - MySQL 5.7
-- PHPUnit 6.5
+- PHPUnit 8.3
 
 **Why it's coded:**
 - challenge

@@ -11,7 +11,7 @@ final class UserTest extends TestCase
     /** @var User $user */
     private $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->user = (new User('Tester'))
             ->changePassword('TesterPassword');

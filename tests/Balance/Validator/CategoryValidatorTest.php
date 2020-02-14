@@ -14,7 +14,7 @@ final class CategoryValidatorTest extends TestCase
     /** @var CategoryValidator $categoryValidator */
     private $categoryValidator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->categoryValidator = new CategoryValidator();
     }
