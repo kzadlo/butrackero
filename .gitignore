@@ -23,7 +23,3 @@
 /.phpcs-cache
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
-
-###> doctrine ###
-/config/packages/doctrine.yaml
-###< doctrine ###
