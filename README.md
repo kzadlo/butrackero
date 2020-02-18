@@ -28,14 +28,13 @@
 - using code analysis tools
 - manual testing API using Postman
 
-
 **How to configure:**
 - git clone https://github.com/kzadlo/butrackero.git
 - server configuration: docker or vhost, apache etc.
 - composer install
-- create config/packages/doctrine.yaml from config/packages/doctrine.yaml.dist and complete database credentials
+- complete database credentials in .env
 - create auth keys and complete JWT_PASSPHRASE in .env:
     * openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
     * openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
-- composer.deploy
+- composer deploy
 - start use! :)
