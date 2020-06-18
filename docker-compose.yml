@@ -1,0 +1,47 @@
+version: '3.5'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: butrackero
+    volumes:
+      - .:/var/www/html
+      - ./docker/volumes/etc/apache2/sites-enabled/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./docker/volumes/var/log/apache2:/var/log/apache2
+    restart: 'on-failure'
+    tty: true
+    depends_on:
+      - db
+    links:
+      - db
+    networks:
+      butrackero:
+        aliases:
+          - butrackero.local
+        ipv4_address: 10.11.0.10
+  db:
+    image: mysql:5.7
+    container_name: 'butrackero_db'
+    environment:
+      MYSQL_DATABASE: 'butrackero'
+      MYSQL_USER: 'butrackero'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+      - ./docker/volumes/var/lib/mysql:/var/lib/mysql
+      - ./docker/volumes/var/log/mysql:/var/log/mysql
+    networks:
+      butrackero:
+        aliases:
+          - db
+        ipv4_address: 10.11.0.20
+
+networks:
+  butrackero:
+    name: butrackero
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.11.0.0/16
