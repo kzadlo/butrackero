@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: butrackero
+    container_name: 'butrackero'
     volumes:
       - .:/var/www/html
       - ./docker/volumes/etc/apache2/sites-enabled/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
